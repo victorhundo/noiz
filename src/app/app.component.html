@@ -1,0 +1,13 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<mat-sidenav-container class="example-container">
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>Noiz</span>
+    </mat-toolbar>
+    <div *ngFor="let item of arrayOne(20); let i = index;" style="margin:10px;">
+      <mat-card>Simple card</mat-card>
+    </div>
+    <router-outlet></router-outlet>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

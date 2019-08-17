@@ -1,0 +1,10 @@
+version: '3'
+services:
+  api:
+    build: ./docker/
+    image: noiz
+    container_name: noiz
+    ports:
+      - "3002:4200"
+    volumes:
+      - ./:/app
