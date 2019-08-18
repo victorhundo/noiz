@@ -1,1 +1,18 @@
-<p>login works!</p>
+<mat-card class="login-box">
+<mat-card-title>Login</mat-card-title>
+<mat-card-content>
+  <div class="example-container">
+
+  <mat-form-field>
+    <input matInput placeholder="Usuário" [(ngModel)]="usuario">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Senha" type="password" [(ngModel)]="senha">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="logar()">Entrar</button>
+  </div>
+
+</mat-card-content>
+</mat-card>

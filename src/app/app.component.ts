@@ -7,7 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'noiz';
-  arrayOne(n: number): any[] {
-    return Array(n);
-  }
 }

@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <span>Noiz</span>
+  <span class="example-spacer"></span>
+
+  <button mat-icon-button (click)="logout()">
+    <mat-icon aria-hidden="false">exit_to_app</mat-icon>
+  </button>
+</mat-toolbar>
+<div *ngFor="let item of arrayOne(20); let i = index;" style="margin:10px;">
+  <mat-card>Simple card</mat-card>
+</div>
