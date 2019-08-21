@@ -11,15 +11,17 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService) { }
 
+  usuario: string;
+  senha: string;
+
   ngOnInit() {
   }
 
   logar(){
       var model =  {username:this.usuario, password:this.senha}
-      var results: Observable = this.authService.login(JSON.stringify(model));
+      var results: Observable<any> = this.authService.login(model);
       results.subscribe( res => {
-        console.log(res.type)
-        localStorage.setItem('login',JSON.stringify(res));
+        localStorage.setItem('noiz',JSON.stringify(res));
         this.router.navigate([''])
       })
     }

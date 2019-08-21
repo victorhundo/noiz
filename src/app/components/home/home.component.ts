@@ -9,13 +9,11 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
-    if(localStorage.getItem('login') == null) this.router.navigate(['login']);
-    else{
-      var aluno = JSON.parse(localStorage.getItem('login'));
-    }
+    this.hasLogged()
+    // if(this.authService.getToken() == null) this.router.navigate(['login']);
   }
 
   arrayOne(n: number): any[] {
@@ -26,6 +24,15 @@ export class HomeComponent implements OnInit {
     localStorage.clear();
     this.router.navigate(['login'])
   }
+
+  hasLogged(){
+      var results: Observable<any> = this.authService.hasLogged();
+      results.subscribe( res => {
+         if(!res.hasLogged){
+           this.router.navigate(['login'])
+        }
+      })
+    }
 
 
 }

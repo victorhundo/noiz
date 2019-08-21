@@ -14,4 +14,13 @@ export class AuthService {
   login(data): Observable<any>{
     return this.http.post(`${API}/auth/password/`, data );
   }
+
+  hasLogged(): Observable<any>{
+    return this.http.get(`${API}/auth/check`);
+  }
+
+  public getToken(): any {
+    if (localStorage.getItem('noiz') == null) return null
+    return JSON.parse(localStorage.getItem('noiz'))["token"];
+  }
 }
