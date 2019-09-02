@@ -18,7 +18,6 @@ export class TokenInterceptor implements HttpInterceptor {
         'Authorization': `${this.authService.getToken()}`
       }
     });
-    console.log('ENTROU AQUI')
     return next.handle(request);
   }
 }

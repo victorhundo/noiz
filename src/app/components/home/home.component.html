@@ -6,6 +6,14 @@
     <mat-icon aria-hidden="false">exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
-<div *ngFor="let item of arrayOne(20); let i = index;" style="margin:10px;">
-  <mat-card>Simple card</mat-card>
-</div>
+
+<mat-card class="login-box">
+<mat-card-title>Votações</mat-card-title>
+<mat-card-content>
+
+</mat-card-content>
+   <button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [routerLink]="['/election']">
+     <mat-icon>add</mat-icon>
+   </button>
+
+</mat-card>

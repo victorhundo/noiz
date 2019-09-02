@@ -10,11 +10,19 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router, private authService: AuthService) { }
+  user: any;
+
+  constructor(private router: Router, private authService: AuthService) {
+    this.user = this.authService.getUser();
+  }
 
   ngOnInit() {
     this.hasLogged()
     // if(this.authService.getToken() == null) this.router.navigate(['login']);
+  }
+
+  hasAdmin() {
+    return this.user.admin_p;
   }
 
   arrayOne(n: number): any[] {

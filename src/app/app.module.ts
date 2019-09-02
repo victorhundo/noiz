@@ -10,8 +10,10 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule}   from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -24,6 +26,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
+import { EletctionComponent } from './components/eletction/eletction.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
@@ -34,7 +37,8 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     SidenavComponent,
-    HomeComponent
+    HomeComponent,
+    EletctionComponent
   ],
   imports: [
     JwtModule.forRoot({
@@ -55,7 +59,10 @@ export function tokenGetter() {
     MatButtonModule,
     FormsModule,
     HttpClientModule,
-    MatIconModule
+    MatIconModule,
+    MatStepperModule,
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
   providers: [
     {

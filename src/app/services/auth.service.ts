@@ -23,4 +23,9 @@ export class AuthService {
     if (localStorage.getItem('noiz') == null) return null
     return JSON.parse(localStorage.getItem('noiz'))["token"];
   }
+
+  public getUser(): any {
+    if (localStorage.getItem('noiz') == null) return null
+    return JSON.parse(localStorage.getItem('noiz'))["user"];
+  }
 }
