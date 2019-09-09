@@ -6,11 +6,14 @@
     <mat-icon aria-hidden="false">exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
-
-<mat-horizontal-stepper [linear]="true" #stepper class="election-box">
+<!-- {{firstFormGroup.value | json }}
+<br />
+<br />
+{{secondFormGroup.value | json }} -->
+<mat-horizontal-stepper [linear]="false" #stepper class="election-box">
   <mat-step [stepControl]="firstFormGroup" >
     <form [formGroup]="firstFormGroup" >
-      <ng-template matStepLabel>Criação da Eleição</ng-template>
+      <ng-template matStepLabel>Criar Eleição</ng-template>
       <mat-form-field class="myGroupForm">
         <input matInput placeholder="Nome abreviado" formControlName="short_name" required>
       </mat-form-field>
@@ -42,19 +45,66 @@
         <mat-checkbox formControlName="private_p">Privada?</mat-checkbox>
       </div>
     </form>
-    <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right" (click)="createElection()">Next</button>
+    <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill out your address</ng-template>
-      <mat-form-field>
-        <input matInput placeholder="Address" formControlName="secondCtrl" required>
+      <ng-template matStepLabel>Adicionar Questões</ng-template>
+      <mat-form-field class="myGroupForm">
+        <input matInput placeholder="Pergunta" formControlName="question" required>
       </mat-form-field>
+      <div formArrayName="answers">
+        <div *ngFor="let answer of answersForm.controls; let i=index" [formGroupName]=i>
+          <mat-form-field class="myGroupFormAnswer">
+            <input matInput placeholder="Resposta {{i + 1}}" formControlName="answer">
+          </mat-form-field>
+          <button mat-mini-fab (click)="deleteAnswer(i)">
+              <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div formArrayName="answer_urls">
+      <div *ngFor="let answer_urls of answersUrlForm.controls; let j=index" [formGroupName]=j>
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Link para mais informações sobre Resposta {{j + 1}}" formControlName="answer_urls">
+        </mat-form-field>
+      </div>
+      </div>
+      <button mat-mini-fab (click)="addAnswer()">
+          <mat-icon>add</mat-icon>
+      </button>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
+
+        <!-- <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button> -->
       </div>
     </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Apuradores</ng-template>
+    You are now done.
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
+
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    You are now done.
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    You are now done.
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
