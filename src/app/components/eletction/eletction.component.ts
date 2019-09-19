@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormArray} from '@angular/forms';
 import { ElectionService } from 'src/app/services/election.service';
+import { Observable } from 'rxjs';
+
 
 
 @Component({

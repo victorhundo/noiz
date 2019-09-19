@@ -1,6 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <mat-sidenav-container class="example-container">
+  <mat-sidenav [mode]="over" style="width:300px;" #sidenav>
+    <app-menu></app-menu>
+  </mat-sidenav>
   <mat-sidenav-content>
+    <app-toolbar></app-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

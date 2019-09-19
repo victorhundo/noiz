@@ -27,10 +27,13 @@ import { LoginComponent } from './components/login/login.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
 import { EletctionComponent } from './components/eletction/eletction.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { ManuComponent } from './components/manu/manu.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
-}
+} 
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ export function tokenGetter() {
     LoginComponent,
     SidenavComponent,
     HomeComponent,
-    EletctionComponent
+    EletctionComponent,
+    ToolbarComponent,
+    ManuComponent,
+    MenuComponent
   ],
   imports: [
     JwtModule.forRoot({

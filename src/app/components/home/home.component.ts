@@ -29,10 +29,7 @@ export class HomeComponent implements OnInit {
     return Array(n);
   }
 
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['login'])
-  }
+  
 
   hasLogged(){
       var results: Observable<any> = this.authService.hasLogged();
