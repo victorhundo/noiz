@@ -15,4 +15,8 @@ export class ElectionService {
   createElection(data): Observable<any>{
     return this.http.post(`${API}/elections/`, data);
   }
+
+  addHelioTrustee(id, data): Observable<any> {
+    return this.http.post(`${API}/elections/${id}/trustee/add-helios/`,data)
+  }
 }

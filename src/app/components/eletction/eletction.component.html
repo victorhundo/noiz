@@ -1,10 +1,10 @@
-<!-- {{firstFormGroup.value | json }}
+{{electionFormGroup.value | json }}
 <br />
 <br />
-{{secondFormGroup.value | json }} -->
+{{trusteeFormGroup.value | json }}
 <mat-horizontal-stepper [linear]="false" #stepper class="election-box">
-  <mat-step [stepControl]="firstFormGroup" >
-    <form [formGroup]="firstFormGroup" >
+  <mat-step [stepControl]="electionFormGroup" >
+    <form [formGroup]="electionFormGroup" >
       <ng-template matStepLabel>Criar Eleição</ng-template>
       <mat-form-field class="myGroupForm">
         <input matInput placeholder="Nome abreviado" formControlName="short_name" required>
@@ -39,8 +39,8 @@
     </form>
     <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
+  <mat-step [stepControl]="questionFormGroup">
+    <form [formGroup]="questionFormGroup">
       <ng-template matStepLabel>Adicionar Questões</ng-template>
       <mat-form-field class="myGroupForm">
         <input matInput placeholder="Pergunta" formControlName="question" required>
@@ -75,11 +75,30 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Apuradores</ng-template>
-    You are now done.
+    <p>Adicione aqui as pessoas que poderão apurar o resultado da eleição. Cada uma das pessoas indicadas como apurador receberá um e-mail para que criem seu par de chaves criptográficas e que carreguem sua chave pública para esta eleição.
+A urna só poderá ser aberta para a eleição depois que todos os apuradores cadastrados entrarem na interface de apuração e fornecerem sua chave privada.</p>
+    <p>ATENÇÃO: Se um apurador perder sua chave, a urna não poderá ser aberta e todos os votos serão perdidos.</p>
+
+
+
+    <form [formGroup]="trusteeFormGroup" >
+      <mat-radio-group formControlName="trustee">
+        <label>Apurador:</label>
+        <mat-radio-button value="helios" (click)="trusteeHelios()">Helios</mat-radio-button>
+        <mat-radio-button value="other" (click)="trusteeOther()">Outro</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field class="myGroupForm">
+        <input matInput placeholder="Nome" formControlName="name" required>
+      </mat-form-field>
+      <mat-form-field class="myGroupForm">
+        <input matInput placeholder="Email" formControlName="email" required>
+      </mat-form-field>
+    </form>
+
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
-
     </div>
   </mat-step>
   <mat-step>
@@ -87,7 +106,8 @@
     You are now done.
     <div>
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
+      <button mat-raised-button color="primary" class="bt-bottom-right" (click)="submit()">Enviar</button>
     </div>
   </mat-step>
   <mat-step>

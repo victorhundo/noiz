@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule}   from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -28,12 +29,11 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
 import { EletctionComponent } from './components/eletction/eletction.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { ManuComponent } from './components/manu/manu.component';
 import { MenuComponent } from './components/menu/menu.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
-} 
+}
 
 @NgModule({
   declarations: [
@@ -43,7 +43,6 @@ export function tokenGetter() {
     HomeComponent,
     EletctionComponent,
     ToolbarComponent,
-    ManuComponent,
     MenuComponent
   ],
   imports: [
@@ -68,7 +67,8 @@ export function tokenGetter() {
     MatIconModule,
     MatStepperModule,
     ReactiveFormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatRadioModule
   ],
   providers: [
     {

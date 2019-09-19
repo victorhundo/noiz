@@ -4,7 +4,6 @@ import { ElectionService } from 'src/app/services/election.service';
 import { Observable } from 'rxjs';
 
 
-
 @Component({
   selector: 'app-eletction',
   templateUrl: './eletction.component.html',
@@ -12,14 +11,17 @@ import { Observable } from 'rxjs';
 })
 export class EletctionComponent implements OnInit {
   isLinear = false;
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
+  electionFormGroup: FormGroup;
+  questionFormGroup: FormGroup;
+  trusteeFormGroup: FormGroup;
+  trusteeOption: number;
   hideRequired: boolean = true;
 
   constructor(private _formBuilder: FormBuilder, private electionService: ElectionService) { }
 
   ngOnInit() {
-    this.firstFormGroup = this._formBuilder.group({
+    this.trusteeOption = 1;
+    this.electionFormGroup = this._formBuilder.group({
       short_name: ['', Validators.required],
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -32,7 +34,7 @@ export class EletctionComponent implements OnInit {
       private_p: false,
       questions: this._formBuilder.array([])
     });
-    this.secondFormGroup = this._formBuilder.group({
+    this.questionFormGroup = this._formBuilder.group({
       question: ['', Validators.required],
       min: 0,
       max: 1,
@@ -42,33 +44,37 @@ export class EletctionComponent implements OnInit {
       tally_type: "homomorphic",
       result_type: "absoluta"
     });
-
     this.addAnswer();
-    this.QuestionForm.push(this.secondFormGroup)
+    this.QuestionForm.push(this.questionFormGroup)
+    this.trusteeFormGroup = this._formBuilder.group({
+      name: [{value: 'Sistema de Votação Eletrônica', disabled: true}, Validators.required],
+      email: [{value: 'heliosvoting.pt@gmail.com',  disabled: true}, Validators.required],
+      trustee: ['helios',Validators.required]
+    });
   }
 
 
   createElection() {
-    var results: Observable<any> = this.electionService.createElection(this.firstFormGroup.value);
+    var results: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
     results.subscribe( res => {
       console.log(res);
     })
   }
 
   get QuestionForm(){
-    return this.firstFormGroup.get('questions') as FormArray
+    return this.electionFormGroup.get('questions') as FormArray
   }
 
   get answersForm(){
-    return this.secondFormGroup.get('answers') as FormArray
+    return this.questionFormGroup.get('answers') as FormArray
   }
 
   get answersUrlForm(){
-    return this.secondFormGroup.get('answer_urls') as FormArray
+    return this.questionFormGroup.get('answer_urls') as FormArray
   }
 
   addQuestion() {
-    this.QuestionForm.push(this.secondFormGroup)
+    this.QuestionForm.push(this.questionFormGroup)
   }
 
   addAnswer() {
@@ -89,5 +95,29 @@ export class EletctionComponent implements OnInit {
     this.answersUrlForm.removeAt(i);
   }
 
+  trusteeHelios(){
+    this.trusteeFormGroup.controls['name'].disable();
+    this.trusteeFormGroup.controls['email'].disable();
+  }
+
+  trusteeOther(){
+    this.trusteeFormGroup.controls['name'].enable();
+    this.trusteeFormGroup.controls['email'].enable();
+  }
+
+  submit() {
+    var resultsElection: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
+    resultsElection.subscribe( res => {
+      if (this.trusteeFormGroup.controls['trustee'].value == 'helios'){
+        var resultsElection: Observable<any> = this.electionService.addHelioTrustee(res.uuid, this.trusteeFormGroup.value);
+        resultsElection.subscribe( res => {
+          console.log(res)
+        })
+      } else {
+        console.log(this.trusteeFormGroup.controls['trustee'].value);
+      }
+      // var resultsTrustee: Observable<any> = this.electionService.trustee();
+    })
+  }
 
 }
