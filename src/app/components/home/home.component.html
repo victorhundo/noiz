@@ -1,12 +1,31 @@
 
 
 <mat-card class="login-box">
-<mat-card-title>Votações</mat-card-title>
+
+
+
 <mat-card-content>
+  <mat-card class="mainElection">
+    <mat-toolbar>
+      <span>{{mainElection.name}}</span>
+      <span class="example-spacer"></span>
+      <button mat-icon-button (click)="logout()">
+        <mat-icon aria-hidden="false">exit_to_app</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-card-content style="padding: 20px;">
+      <p>{{mainElection.description}}</p>
+    </mat-card-content>
+  </mat-card>
+  <div class="electionsBox">
+    <mat-card *ngFor="let e of elections" class="election">
+      <mat-card-title>{{e.name}}</mat-card-title>
+    </mat-card>
+  </div>
 
 </mat-card-content>
-   <button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [routerLink]="['/election']">
-     <mat-icon>add</mat-icon>
-   </button>
 
 </mat-card>
+<button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [routerLink]="['/election']">
+  <mat-icon>add</mat-icon>
+</button>

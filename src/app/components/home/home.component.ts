@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { ElectionService } from 'src/app/services/election.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -11,13 +12,16 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   user: any;
+  elections: any;
+  mainElection: any;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private electionService: ElectionService) {
     this.user = this.authService.getUser();
   }
 
   ngOnInit() {
     this.hasLogged()
+    this.getElections()
     // if(this.authService.getToken() == null) this.router.navigate(['login']);
   }
 
@@ -29,7 +33,16 @@ export class HomeComponent implements OnInit {
     return Array(n);
   }
 
-  
+  getElections(){
+    var results: Observable<any> = this.electionService.getElections();
+    results.subscribe( res => {
+       this.elections = res;
+       if (res.length > 0){
+         this.mainElection = res[0]
+       }
+       console.log(this.mainElection)
+    })
+  }
 
   hasLogged(){
       var results: Observable<any> = this.authService.hasLogged();

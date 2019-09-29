@@ -1,7 +1,7 @@
-{{electionFormGroup.value | json }}
+<!-- {{electionFormGroup.value | json }}
 <br />
 <br />
-{{trusteeFormGroup.value | json }}
+{{trusteeFormGroup.value | json }} -->
 <mat-horizontal-stepper [linear]="false" #stepper class="election-box">
   <mat-step [stepControl]="electionFormGroup" >
     <form [formGroup]="electionFormGroup" >
@@ -37,7 +37,7 @@
         <mat-checkbox formControlName="private_p">Privada?</mat-checkbox>
       </div>
     </form>
-    <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
+    <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
   </mat-step>
   <mat-step [stepControl]="questionFormGroup">
     <form [formGroup]="questionFormGroup">
@@ -66,7 +66,8 @@
           <mat-icon>add</mat-icon>
       </button>
       <div>
-        <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
+        <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
+        <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
 
         <!-- <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button> -->
@@ -97,33 +98,36 @@ A urna só poderá ser aberta para a eleição depois que todos os apuradores ca
     </form>
 
     <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Next</button>
+      <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
+      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
     </div>
   </mat-step>
   <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
+    <ng-template matStepLabel>Eleitores</ng-template>
+    <form [formGroup]="voterFormGroup" >
+      <mat-radio-group formControlName="voter">
+        <!-- <label>Eleitores:</label> -->
+        <mat-radio-button value="open" (click)="voterOpen()"> Qualquer eleitor que possa se conectar no sistema.</mat-radio-button>
+        <mat-radio-button value="close" (click)="voterClose()">Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field>
+        <!-- <button mat-raised-button color="primary" formControlName="loadVoter">carregar arquivo de eleitores</button> -->
+        <input matInput placeholder="Email" formControlName="loadVoter" required>
+      </mat-form-field>
+    </form>
+    <div>
+      <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
+      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Finalizar</ng-template>
     You are now done.
     <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
+      <!-- <button mat-button matStepperPrevious>Back</button> -->
       <button mat-raised-button color="primary" class="bt-bottom-right" (click)="submit()">Enviar</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    You are now done.
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    You are now done.
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-raised-button color="primary" matStepperPrevious >Voltar</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>

@@ -6,16 +6,37 @@
   flex: 1 1 auto;
 }
 
-.login-box {
-  width: 50%;
-  height: 180px;
+.example-spacer {
+  flex: 1 1 auto;
+}
 
+.login-box {
+  width: 60%;
+  height: 180px;
+  padding: 0px;
   position:absolute; /*it can be fixed too*/
   left:0; right:0;
   top:0; bottom:0;
   margin:auto;
 }
 
+.electionsBox {
+  padding: 10px;
+  height: 70px;
+  overflow-y: scroll;
+  background-color: transparent;
+}
+
+.election {
+  margin-bottom: 10px;
+  height: 30px;
+}
+
+.mainElection {
+  height: 180px;
+  margin-bottom: 10px;
+  padding: 0px;
+}
 .example-container {
   display: flex;
   flex-direction: column;
@@ -28,6 +49,6 @@
 
 .md-fab-bottom-right {
   position: absolute;
-  right: -20px;
-  bottom: -20px;
+  right: 20px;
+  bottom: 20px;
 }

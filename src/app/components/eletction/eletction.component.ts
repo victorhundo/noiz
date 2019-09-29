@@ -14,6 +14,7 @@ export class EletctionComponent implements OnInit {
   electionFormGroup: FormGroup;
   questionFormGroup: FormGroup;
   trusteeFormGroup: FormGroup;
+  voterFormGroup: FormGroup;
   trusteeOption: number;
   hideRequired: boolean = true;
 
@@ -50,6 +51,10 @@ export class EletctionComponent implements OnInit {
       name: [{value: 'Sistema de Votação Eletrônica', disabled: true}, Validators.required],
       email: [{value: 'heliosvoting.pt@gmail.com',  disabled: true}, Validators.required],
       trustee: ['helios',Validators.required]
+    });
+    this.voterFormGroup = this._formBuilder.group({
+      loadVoter: [{value: 'carregar arquivo de eleitores', disabled: true}, Validators.required],
+      voter: ['open',Validators.required]
     });
   }
 
@@ -105,18 +110,39 @@ export class EletctionComponent implements OnInit {
     this.trusteeFormGroup.controls['email'].enable();
   }
 
+  voterOpen(){
+    this.voterFormGroup.controls['loadVoter'].disable();
+  }
+
+  voterClose(){
+    this.voterFormGroup.controls['loadVoter'].enable();
+  }
+
   submit() {
     var resultsElection: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
     resultsElection.subscribe( res => {
       if (this.trusteeFormGroup.controls['trustee'].value == 'helios'){
-        var resultsElection: Observable<any> = this.electionService.addHelioTrustee(res.uuid, this.trusteeFormGroup.value);
+        var resultsElection: Observable<any> = this.electionService.addHelioTrustee(res.message.uuid, this.trusteeFormGroup.value);
         resultsElection.subscribe( res => {
           console.log(res)
         })
       } else {
         console.log(this.trusteeFormGroup.controls['trustee'].value);
       }
-      // var resultsTrustee: Observable<any> = this.electionService.trustee();
+
+      if(this.voterFormGroup.controls['voter'].value == 'open'){
+        var resultsElection: Observable<any> = this.electionService.eligibility(res.message.uuid, {"eligibility":"openreg"});
+        resultsElection.subscribe( res => {
+          console.log(res)
+        })
+      } else {
+        var resultsElection: Observable<any> = this.electionService.eligibility(res.message.uuid, {"eligibility":"closereg"});
+        resultsElection.subscribe( res => {
+          console.log(res)
+        })
+      }
+
+
     })
   }
 

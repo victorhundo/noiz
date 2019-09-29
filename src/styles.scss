@@ -5,3 +5,13 @@ body {
   margin: 0px;
   font-family: Roboto,"Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
 }
+
+
+html {
+overflow: scroll;
+overflow-x: hidden;
+}
+::-webkit-scrollbar {
+width: 0px; /* remove scrollbar space */
+background: transparent; // optional: just make scrollbar invisible /
+}
