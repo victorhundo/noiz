@@ -11,8 +11,9 @@
 }
 
 .login-box {
-  width: 60%;
-  height: 180px;
+  width: 90%;
+  max-width: 800px;
+  height: 250px;
   padding: 0px;
   position:absolute; /*it can be fixed too*/
   left:0; right:0;
@@ -33,9 +34,10 @@
 }
 
 .mainElection {
-  height: 180px;
+  height: 250px;
   margin-bottom: 10px;
   padding: 0px;
+  background: #822121;
 }
 .example-container {
   display: flex;
@@ -51,4 +53,32 @@
   position: absolute;
   right: 20px;
   bottom: 20px;
+}
+
+.description {
+  padding: 20px;
+  padding-bottom: 0px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+.subtitle {
+  position: absolute;
+  top: 38px;
+}
+
+.end {
+  position: absolute;
+  left: 15px;
+}
+
+.noneElection {
+  position: absolute;
+  top: 100px;
+  width: 100%;
+  text-align: center;
+  color: #8c8c8c;
+  font-size: xx-large;
 }

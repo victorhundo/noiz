@@ -1,22 +1,49 @@
 
-
-<mat-card class="login-box">
-
+<mat-card class="login-box" >
 
 
-<mat-card-content>
+  <mat-card-content *ngIf="!hasElection()">
+    <h1 class="noneElection">NENHUMA ELEIÇÃO AINDA</h1>
+  </mat-card-content>
+
+
+
+<mat-card-content *ngIf="hasElection()">
+
   <mat-card class="mainElection">
     <mat-toolbar>
-      <span>{{mainElection.name}}</span>
+      <!-- <span>{{mainElection.name}}</span> -->
+      <mat-card-title>{{mainElection.name}}</mat-card-title>
+      <mat-card-subtitle class="subtitle">Criado(a) por: {{mainElection.admin}}</mat-card-subtitle>
       <span class="example-spacer"></span>
-      <button mat-icon-button (click)="logout()">
-        <mat-icon aria-hidden="false">exit_to_app</mat-icon>
+      <button mat-icon-button (click)="freeze()" *ngIf="isNotFreeze()">
+        <mat-icon aria-hidden="false">ac_unit</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="hasAdmin()">
+        <mat-icon aria-hidden="false">archive</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="hasAdmin()">
+        <mat-icon aria-hidden="false">edit</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="hasAdmin()">
+        <mat-icon aria-hidden="false">file_copy</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon aria-hidden="false">more_vert</mat-icon>
       </button>
     </mat-toolbar>
-    <mat-card-content style="padding: 20px;">
-      <p>{{mainElection.description}}</p>
+    <mat-card-content class="description">
+      <p >{{mainElection.description}}</p>
     </mat-card-content>
+    <mat-card-actions style="padding: 20px;" align="end">
+      <button mat-icon-button disabled class="end" style="color: #88ff02;">
+        <mat-icon aria-hidden="false">timer</mat-icon>
+        Encerramento: 30/09/2019 21:00
+      </button>
+      <button mat-raised-button color="primary">VOTAR</button>
+    </mat-card-actions>
   </mat-card>
+
   <div class="electionsBox">
     <mat-card *ngFor="let e of elections" class="election">
       <mat-card-title>{{e.name}}</mat-card-title>

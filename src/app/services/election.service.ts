@@ -12,12 +12,16 @@ export class ElectionService {
 
   constructor(private http:HttpClient) { }
 
-  getElections(data): Observable<any>{
+  getElections(): Observable<any>{
     return this.http.get(`${API}/elections/`);
   }
 
   createElection(data): Observable<any>{
     return this.http.post(`${API}/elections/`, data);
+  }
+
+  freezeElection(id, data): Observable<any> {
+    return this.http.post(`${API}/elections/${id}/freeze/`,data)
   }
 
   addHelioTrustee(id, data): Observable<any> {

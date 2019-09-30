@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormArray} from '@angular/forms';
 import { ElectionService } from 'src/app/services/election.service';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class EletctionComponent implements OnInit {
   trusteeOption: number;
   hideRequired: boolean = true;
 
-  constructor(private _formBuilder: FormBuilder, private electionService: ElectionService) { }
+  constructor(private _formBuilder: FormBuilder, private electionService: ElectionService, private router: Router) { }
 
   ngOnInit() {
     this.trusteeOption = 1;
@@ -141,6 +142,8 @@ export class EletctionComponent implements OnInit {
           console.log(res)
         })
       }
+
+       this.router.navigate([''])
 
 
     })
