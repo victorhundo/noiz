@@ -35,19 +35,31 @@
     <mat-card-content class="description">
       <p >{{mainElection.description}}</p>
     </mat-card-content>
-    <mat-card-actions style="padding: 20px;" align="end">
+    <mat-card-actions style="padding: 20px;" align="end" class="electionActions">
+      <div *ngIf="!elecitonIsEnd(mainElection.voting_ends_at)">
       <button mat-icon-button disabled class="end" style="color: #88ff02;">
         <mat-icon aria-hidden="false">timer</mat-icon>
-        Encerramento: 30/09/2019 21:00
+        Encerramento: {{mainElection.voting_ends_at | date:'dd/MM/yyyy - h:mm'}}h
       </button>
+      </div>
+      <div *ngIf="elecitonIsEnd(mainElection.voting_ends_at)" class="electionActions">
+      <button mat-icon-button disabled class="end" style="color: #88ff02;">
+        <mat-icon aria-hidden="false">timer</mat-icon>
+        Encerrada
+      </button>
+      </div>
       <button mat-raised-button color="primary">VOTAR</button>
     </mat-card-actions>
   </mat-card>
 
-  <div class="electionsBox">
-    <mat-card *ngFor="let e of elections" class="election">
+  <div class="electionsBox waves-effect waves-light" *ngIf="elections.length > 1">
+    <div *ngFor="let e of elections">
+    <mat-card class="election" *ngIf="!(e.uuid == mainElection.uuid)" (click)="changeMainElection(e)" >
+      <a href="#" class="electionBtn" matRipple>
       <mat-card-title>{{e.name}}</mat-card-title>
+      </a>
     </mat-card>
+    </div>
   </div>
 
 </mat-card-content>

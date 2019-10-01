@@ -70,5 +70,13 @@ export class HomeComponent implements OnInit {
       })
     }
 
+  changeMainElection(e:any) {
+    this.mainElection = e;
+  }
+
+  elecitonIsEnd(date:string){
+    var endTime: Date = new Date(Date.parse(date));
+    return endTime.getTime() < Date.now();
+  }
 
 }
