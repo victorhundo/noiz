@@ -1,0 +1,48 @@
+{{firstFormGroup.value | json}}
+<mat-card class="login-box">
+  <mat-card-title style="width:100%; text-align:center;">{{election.name}}</mat-card-title>
+<mat-horizontal-stepper [linear]="true" #stepper class="boothForm" labelPosition="bottom">
+  <mat-step [editable]="false">
+    <ng-template matStepLabel>Instruções</ng-template>
+    <p>Para votar nessa eleição é necessário que siga os passos abaixo:<p>
+      <p>1. <u>Marcar</u> suas escolhas.</p>
+      <p>2. <u>Revisar & Confirmar</u> suas escolhas.</p>
+      <p>3. <u>Depositar</u> sua cédula cifrada na urna.</p>
+
+    <button mat-raised-button matStepperNext >Next</button>
+  </mat-step>
+  <mat-step [stepControl]="firstFormGroup" [editable]="false">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Marcar</ng-template>
+      <mat-radio-group formControlName="answer" >
+        <h2 class="questionTitle">{{questions.question}}</h2>
+        <p *ngFor="let a of questions.answers; let i = index" [attr.data-index]="i">
+          <mat-radio-button value="{{questions.answers[i].answer}}">
+            {{questions.answers[i].answer}}
+          </mat-radio-button>
+          <a mat-icon-button href="{{questions.answer_urls[i].answer_urls}}" target="_blank">
+            <mat-icon aria-hidden="false">launch</mat-icon>
+          </a>
+        </p>
+      </mat-radio-group>
+      <div>
+        <button mat-button matStepperNext class="netxBtn">Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [editable]="false">
+    <ng-template matStepLabel>Revisar</ng-template>
+    <h2 class="questionTitle">Revise sua cédula</h2>
+    <p>{{getAnswer()}}</p>
+    <button mat-button matStepperNext>Next</button>
+  </mat-step>
+  <mat-step [editable]="false">
+    <ng-template matStepLabel>Depositar</ng-template>
+    You are now done.
+    <div>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-raised-button color="primary" (click)="submit()">Depositar Cédula na Urna</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
+</mat-card>

@@ -48,7 +48,7 @@
         Encerrada
       </button>
       </div>
-      <button mat-raised-button color="primary">VOTAR</button>
+      <button mat-raised-button color="primary" [routerLink]="['/booth', mainElection.short_name]"  [disabled]="isNotFreeze()">VOTAR</button>
     </mat-card-actions>
   </mat-card>
 

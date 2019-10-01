@@ -16,6 +16,14 @@ export class ElectionService {
     return this.http.get(`${API}/elections/`);
   }
 
+  getElection(id): Observable<any>{
+    return this.http.get(`${API}/elections/${id}`);
+  }
+
+  voteElection(id, data):Observable<any>{
+    return this.http.post(`${API}/elections/${id}/cast/`, data);
+  }
+
   createElection(data): Observable<any>{
     return this.http.post(`${API}/elections/`, data);
   }

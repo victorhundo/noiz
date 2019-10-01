@@ -31,6 +31,7 @@ import { HomeComponent } from './components/home/home.component';
 import { EletctionComponent } from './components/eletction/eletction.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { BoothComponent } from './components/booth/booth.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
@@ -44,7 +45,8 @@ export function tokenGetter() {
     HomeComponent,
     EletctionComponent,
     ToolbarComponent,
-    MenuComponent
+    MenuComponent,
+    BoothComponent
   ],
   imports: [
     JwtModule.forRoot({

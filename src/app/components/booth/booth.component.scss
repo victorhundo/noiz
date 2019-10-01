@@ -1,0 +1,28 @@
+.login-box {
+  position:absolute; /*it can be fixed too*/
+  width: 90%;
+  max-width: 800px;
+  height: 350px;
+  left:0; right:0; top:0; bottom:0;
+  margin:auto;
+}
+
+.title {
+  width: 100%;
+}
+
+.boothForm {
+  position: absolute;
+  max-height: 347px;
+  left: 0; right: 0; bottom: 20px; top: 50px;
+  overflow-y: scroll;
+}
+
+// .netxBtn {
+//   position: absolute;
+//   right: 20px
+// }
+
+.questionTitle {
+  margin: 0px;
+}
