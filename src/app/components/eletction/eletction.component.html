@@ -1,8 +1,8 @@
-{{electionFormGroup.value | json }}
+<!-- {{electionFormGroup.value | json }}
 <br />
 <br />
-{{trusteeFormGroup.value | json }}
-<mat-horizontal-stepper [linear]="false" #stepper class="election-box">
+{{trusteeFormGroup.value | json }} -->
+<mat-horizontal-stepper [linear]="false" #stepper class="election-box" labelPosition="bottom">
   <mat-step [stepControl]="electionFormGroup" >
     <form [formGroup]="electionFormGroup" >
       <ng-template matStepLabel>Criar Eleição</ng-template>

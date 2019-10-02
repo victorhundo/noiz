@@ -14,7 +14,7 @@
     <mat-toolbar>
       <!-- <span>{{mainElection.name}}</span> -->
       <mat-card-title>{{mainElection.name}}</mat-card-title>
-      <mat-card-subtitle class="subtitle">Criado(a) por: {{mainElection.admin}}</mat-card-subtitle>
+      <p><mat-card-subtitle class="subtitle">Criado(a) por: {{mainElection.admin}}</mat-card-subtitle></p>
       <span class="example-spacer"></span>
       <button mat-icon-button (click)="freeze()" *ngIf="isNotFreeze()">
         <mat-icon aria-hidden="false">ac_unit</mat-icon>

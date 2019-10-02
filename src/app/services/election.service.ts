@@ -17,7 +17,7 @@ export class ElectionService {
   }
 
   getElection(id): Observable<any>{
-    return this.http.get(`${API}/elections/${id}`);
+    return this.http.get(`${API}/elections/${id}/`);
   }
 
   voteElection(id, data):Observable<any>{
