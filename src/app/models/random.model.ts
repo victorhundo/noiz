@@ -1,5 +1,5 @@
 import * as sjcl from 'sjcl';
-import * as bigInt from 'big-integer';
+declare var BigInt:any;
 
 export class Random {
   constructor(){ }
@@ -7,7 +7,7 @@ export class Random {
   static getRandomInteger(max:any) {
     var bit_length = max.bitLength();
     var random = sjcl.random.randomWords(Math.ceil(bit_length / 32)+2, 0); //sjcl
-    var rand_bi = bigInt(sjcl.codec.hex.fromBits(random),16); //sjcl
-    return rand_bi;
+    var rand_bi = new BigInt(sjcl.codec.hex.fromBits(random),16); //sjcl
+    return rand_bi.mod(max);
   }
 }

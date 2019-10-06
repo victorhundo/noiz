@@ -1,8 +1,7 @@
-import * as bigInt from 'big-integer';
-import * as sha256 from 'sha256';
 import {Proof} from 'src/app/models/proof.model';
-import {Random} from 'src/app/models/random.model';
 import {DisjunctiveProof} from 'src/app/models/disjunctiveProof.model';
+declare var hex_sha1:any;
+declare var BigInt:any;
 
 export class Ciphertext {
   alpha:any;
@@ -15,13 +14,27 @@ export class Ciphertext {
     this.pk = pk;
   }
 
-  simulateProof(plaintext:any, challenge:any) {
-    // compute beta/plaintext, the completion of the DH tuple
-    var beta_over_plaintext = this.beta.multiply(plaintext.m.modInv(this.pk.p)).mod(this.pk.p);
+  public toString = () : string => {
+    return JSON.stringify({
+      "alpha": this.alpha.toString(),
+      "beta": this.beta.toString(),
+    })
+  }
 
-    // the DH tuple we are simulating here is
-    // g, y, alpha, beta/m
-    return Proof.simulate(this.pk.g, this.pk.y, this.alpha, beta_over_plaintext, this.pk.p, this.pk.q, challenge);
+  public toJSONObject() {
+    return {alpha: this.alpha.toString(), beta: this.beta.toString()}
+  }
+
+  multiply(other:any) {
+    // special case if other is 1 to enable easy aggregate ops
+    if (other == 1)
+      return this;
+    
+    // homomorphic multiply
+    return new Ciphertext(
+      this.alpha.multiply(other.alpha).mod(this.pk.p),
+      this.beta.multiply(other.beta).mod(this.pk.p),
+      this.pk);
   }
 
   generateProof(plaintext:any, randomness:any, challenge_generator:any){
@@ -29,22 +42,16 @@ export class Ciphertext {
     return proof;
   }
 
-  disjunctive_challenge_generator(commitments:any) {
-    var strings_to_hash = [];
+  simulateProof(plaintext:any, challenge:any) {
+    // compute beta/plaintext, the completion of the DH tuple
+    var beta_over_plaintext = this.beta.multiply(plaintext.m.modInverse(this.pk.p)).mod(this.pk.p);
 
-    // go through all proofs and append the commitments
-    commitments.forEach(function(commitment) {
-      // toJSONObject instead of toString because of IE weirdness.
-      strings_to_hash[strings_to_hash.length] = commitment.A.toJSON();
-      strings_to_hash[strings_to_hash.length] = commitment.B.toJSON();
-    });
+    // the DH tuple we are simulating here is
+    // g, y, alpha, beta/m
+    return Proof.simulate(this.pk.g, this.pk.y, this.alpha, beta_over_plaintext, this.pk.p, this.pk.q, challenge);
+  }
 
-    // console.log(strings_to_hash);
-    // STRINGS = strings_to_hash;
-    return bigInt(sha256(strings_to_hash.join(",")), 16);
-  };
-
-  generateDisjunctiveProof(list_of_plaintexts:any, real_index:any, randomness:any) {
+  generateDisjunctiveProof(list_of_plaintexts:any, real_index:any, randomness:any, challenge_generator:any) {
     var proofs = list_of_plaintexts.map((plaintext:any, p_num:any) => {
       if (p_num == real_index) {
         // no real proof yet
@@ -68,7 +75,7 @@ export class Ciphertext {
         return proof.commitment;
       });
 
-      var disjunctive_challenge = this.disjunctive_challenge_generator(commitments);
+      var disjunctive_challenge = challenge_generator(commitments);
 
       // now we must subtract all of the other challenges from this challenge.
       var real_challenge = disjunctive_challenge;
@@ -77,12 +84,18 @@ export class Ciphertext {
           real_challenge = real_challenge.add(proof.challenge.negate());
       });
 
+
       // make sure we mod q, the exponent modulus
       return real_challenge.mod(this.pk.q);
     });
 
     // set the real proof
     proofs[real_index] = real_proof;
-    return new DisjunctiveProof(proofs);
+    var val: any = new DisjunctiveProof(proofs);
+    return val.list_of_proofs;
+  }
+
+  static fromJSONObject(d:any,  pk:any){
+    return new Ciphertext(BigInt.fromJSONObject(d.alpha), BigInt.fromJSONObject(d.beta), pk);
   }
 }

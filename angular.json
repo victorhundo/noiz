@@ -30,7 +30,11 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/sha1.js",
+              "src/assets/js/sha2.js",
+              "src/assets/js/helios.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -1,5 +1,5 @@
-import * as bigInt from 'big-integer';
 import {Random} from 'src/app/models/random.model';
+declare var BigInt:any;
 
 export class Proof {
   A:any;
@@ -9,10 +9,32 @@ export class Proof {
   response:any
 
   constructor(A:any, B:any, challenge:any, response:any){
+    this.challenge = challenge;
     this.commitment.A = A;
     this.commitment.B = B;
-    this.challenge = challenge;
     this.response = response;
+  }
+
+  public toString = () : string => {
+    return JSON.stringify({
+      "challenge": this.challenge.toString(),
+      "commitment": {
+        A: this.commitment.A.toString(),
+        B: this.commitment.B.toString()
+      },
+      "response": this.response.toString()
+    })
+  }
+
+  public toJSONObject() {
+    return {
+      "challenge": this.challenge.toString(),
+      "commitment": {
+        A: this.commitment.A.toString(),
+        B: this.commitment.B.toString()
+      },
+      "response": this.response.toString()
+    }
   }
 
   static generate(little_g, little_h, x, p, q, challenge_generator) {
@@ -29,6 +51,7 @@ export class Proof {
     // Get the challenge from the callback that generates it
     proof.challenge = challenge_generator(proof.commitment);
 
+    var a:any = x.multiply(proof.challenge)
     // Compute response = w + x * challenge
     proof.response = w.add(x.multiply(proof.challenge)).mod(q);
 
@@ -46,11 +69,21 @@ export class Proof {
 
     // now we compute A and B
     // A = little_g ^ w, and at verification time, g^response = G^challenge * A, so A = (G^challenge)^-1 * g^response
-    var A = big_g.modPow(challenge, p).modInv(p).multiply(little_g.modPow(response, p)).mod(p);
+    var A = big_g.modPow(challenge, p).modInverse(p).multiply(little_g.modPow(response, p)).mod(p);
 
     // B = little_h ^ w, and at verification time, h^response = H^challenge * B, so B = (H^challenge)^-1 * h^response
-    var B = big_h.modPow(challenge, p).modInv(p).multiply(little_h.modPow(response, p)).mod(p);
+    var B = big_h.modPow(challenge, p).modInverse(p).multiply(little_h.modPow(response, p)).mod(p);
 
     return new Proof(A, B, challenge, response);
   }
+
+  
+
+  static fromJSONObject = function(d:any) {
+    return new Proof(
+      BigInt.fromJSONObject(d.commitment.A),
+      BigInt.fromJSONObject(d.commitment.B),
+      BigInt.fromJSONObject(d.challenge),
+      BigInt.fromJSONObject(d.response));
+  };
 }
