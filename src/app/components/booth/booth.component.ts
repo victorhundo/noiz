@@ -100,9 +100,15 @@ export class BoothComponent implements OnInit {
        this.pk.q = key.q;
        this.pk.y = key.y;
        this.election.public_key = this.pk;
-       this.election.hash = b64_sha256(JSON.stringify(this.election));
+       this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
        this.election.election_hash = this.election.hash;
        this.election.public_key = this.keyBigInt(this.pk);
+    })
+  }
+
+  toUnicode(s:string) {
+    return s.replace(/[\u007F-\uFFFF]/g, (chr) => {
+      return "\\u" + ("0000" + chr.charCodeAt(0).toString(16)).substr(-4)
     })
   }
 
