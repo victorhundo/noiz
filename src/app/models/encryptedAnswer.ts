@@ -19,7 +19,7 @@ export class EncryptedAnswer {
         // store answer
         // CHANGE 2008-08-06: answer is now an *array* of answers, not just a single integer
         this.answer = answer;
-    
+     
         // do the encryption
         var enc_result = this.doEncryption(question, answer, pk, null);
     
@@ -36,7 +36,7 @@ export class EncryptedAnswer {
         var generate_new_randomness: boolean = false;
         var num_selected_answers:number = 0;
         var plaintexts: any;
-    
+
         var plaintexts: any = null;
         if (question.max != null){
           plaintexts = Util.generate_plaintexts(pk,question.min,question.max);
@@ -51,10 +51,10 @@ export class EncryptedAnswer {
         for(let i = 0; i < question.answers.length; i++){
           var index:number;
           var plaintext_index:number;
-          if (question.answers[i].answer == answer){
+          if (answer.includes(i)) {
             plaintext_index = 1;
-            num_selected_answers++;
-          }else {
+            num_selected_answers += 1;
+          } else {
             plaintext_index = 0;
           }
     

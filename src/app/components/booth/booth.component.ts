@@ -122,20 +122,20 @@ export class BoothComponent implements OnInit {
   }
 
   getAnswer(){
-    return this.firstFormGroup.get('answer').value;
+    return parseInt(this.firstFormGroup.get('answer').value);
   }
 
   submit() { 
     var data:string = this.encrypted_vote();
+    console.log(data);
     var results: Observable<any> = this.electionService.voteElection(this.election.uuid, data);
     results.subscribe( res => {
-       console.log(res);
-        //this.router.navigate([''])
+        if(res.status == 200) this.router.navigate([''])
     })  
   }
 
   encrypted_vote() {
-    var encryptedBooth = new EncryptedVote(this.getAnswer(),this.election);
+    var encryptedBooth = new EncryptedVote([[this.getAnswer()]],this.election); 
     delete encryptedBooth.election;
     encryptedBooth.encrypted_answers.forEach(element => {
       delete element.answer;
