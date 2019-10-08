@@ -1,0 +1,28 @@
+<mat-card class="login-box">
+    <mat-card-title>Criar Usuário</mat-card-title>
+    <mat-card-content>
+        <div class="example-container">
+
+        <form [formGroup]="userFormGroup">
+        <mat-form-field class="form-login">
+        <input matInput placeholder="Login" formControlName="username">
+        </mat-form-field>
+
+        <mat-form-field class="form-login">
+            <input matInput placeholder="Nome" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field class="form-login">
+            <input matInput placeholder="Email" formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field class="form-login">
+        <input matInput placeholder="Senha" type="password" formControlName="password">
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" (click)="createUser()" class="form-login">Entrar</button>
+        </form>
+        </div>
+    </mat-card-content>
+</mat-card>
+        

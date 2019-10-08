@@ -16,11 +16,14 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatRippleModule} from '@angular/material/core';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+
+
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TokenInterceptor } from './token.interceptor';
-import { AuthService } from 'src/app/services/auth.service';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +35,8 @@ import { EletctionComponent } from './components/eletction/eletction.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { BoothComponent } from './components/booth/booth.component';
+import { UserComponent } from './components/user/user.component';
+import { NewUserComponent } from './components/user/new/new.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
@@ -46,7 +51,9 @@ export function tokenGetter() {
     EletctionComponent,
     ToolbarComponent,
     MenuComponent,
-    BoothComponent
+    BoothComponent,
+    UserComponent,
+    NewUserComponent
   ],
   imports: [
     JwtModule.forRoot({
@@ -72,7 +79,9 @@ export function tokenGetter() {
     ReactiveFormsModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatRippleModule
+    MatRippleModule,
+    MatMenuModule,
+    MatTableModule
   ],
   providers: [
     {

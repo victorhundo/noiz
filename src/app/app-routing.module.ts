@@ -5,13 +5,18 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { EletctionComponent } from './components/eletction/eletction.component';
 import { BoothComponent } from './components/booth/booth.component';
+import { UserComponent } from './components/user/user.component';
+import { NewUserComponent } from './components/user/new/new.component';
+
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'election', component: EletctionComponent },
+  { path: 'elections/new', component: EletctionComponent },
   { path: 'booth/:short_name', component: BoothComponent },
+  { path: 'users', component: UserComponent },
+  { path: 'users/new', component: NewUserComponent },
 ];
 
 @NgModule({

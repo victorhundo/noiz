@@ -19,14 +19,14 @@
       <button mat-icon-button (click)="freeze()" *ngIf="isNotFreeze()">
         <mat-icon aria-hidden="false">ac_unit</mat-icon>
       </button>
-      <button mat-icon-button *ngIf="hasAdmin()">
+      <!-- <button mat-icon-button *ngIf="hasAdmin()">
         <mat-icon aria-hidden="false">archive</mat-icon>
       </button>
       <button mat-icon-button *ngIf="hasAdmin()">
         <mat-icon aria-hidden="false">edit</mat-icon>
-      </button>
-      <button mat-icon-button *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">file_copy</mat-icon>
+      </button>  -->
+      <button mat-icon-button *ngIf="canCompute()" (click)="compute_tally()">
+        <mat-icon aria-hidden="false">done_all</mat-icon>
       </button>
       <button mat-icon-button>
         <mat-icon aria-hidden="false">more_vert</mat-icon>
@@ -65,6 +65,17 @@
 </mat-card-content>
 
 </mat-card>
-<button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [routerLink]="['/election']">
+
+<button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [matMenuTriggerFor]="menu">
   <mat-icon>add</mat-icon>
 </button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item [routerLink]="['/elections/new']">
+    <mat-icon>how_to_vote</mat-icon>
+    <span>Eleição</span>
+  </button>
+  <button mat-menu-item [routerLink]="['/users/new']">
+    <mat-icon>person</mat-icon>
+    <span>Usuário</span>
+  </button>
+</mat-menu>

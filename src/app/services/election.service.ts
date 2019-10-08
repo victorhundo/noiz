@@ -39,4 +39,8 @@ export class ElectionService {
   eligibility(id,data): Observable<any> {
     return this.http.post(`${API}/elections/${id}/voters/eligibility/`,data)
   }
+
+  computeTally(id:string): Observable<any> {
+    return this.http.post(`${API}/elections/${id}/compute_tally/`,{})
+  }
 }

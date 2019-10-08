@@ -79,4 +79,15 @@ export class HomeComponent implements OnInit {
     return endTime.getTime() < Date.now();
   }
 
+  canCompute(){
+    return !this.isNotFreeze()
+  }
+
+  compute_tally(){
+    var results: Observable<any> = this.electionService.computeTally(this.mainElection.uuid);
+      results.subscribe( res => {
+        location.reload()
+      })
+  }
+
 }
