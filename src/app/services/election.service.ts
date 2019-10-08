@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { API } from 'src/app/util';
@@ -42,5 +42,12 @@ export class ElectionService {
 
   computeTally(id:string): Observable<any> {
     return this.http.post(`${API}/elections/${id}/compute_tally/`,{})
+  }
+
+  addVoters(id:string,data:any): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('content-type', 'multipart/form-data')
+    // headers = headers.append('zumo-api-version', '2.0.0');
+    return this.http.post(`${API}/elections/${id}/voters/upload`,data)
   }
 }

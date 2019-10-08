@@ -10,7 +10,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import { FormsModule, ReactiveFormsModule}   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -37,6 +37,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { BoothComponent } from './components/booth/booth.component';
 import { UserComponent } from './components/user/user.component';
 import { NewUserComponent } from './components/user/new/new.component';
+import { FormPart1Component } from './components/election/form-part1/form-part1.component';
 
 export function tokenGetter() {
   return localStorage.getItem('noiz')["token"];
@@ -53,7 +54,8 @@ export function tokenGetter() {
     MenuComponent,
     BoothComponent,
     UserComponent,
-    NewUserComponent
+    NewUserComponent,
+    FormPart1Component
   ],
   imports: [
     JwtModule.forRoot({

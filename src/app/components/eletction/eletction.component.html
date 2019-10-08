@@ -1,8 +1,4 @@
-<!-- {{electionFormGroup.value | json }}
-<br />
-<br />
-{{trusteeFormGroup.value | json }} -->
-<mat-horizontal-stepper [linear]="false" #stepper class="election-box" labelPosition="bottom">
+<mat-horizontal-stepper [linear]="true" #stepper class="election-box" labelPosition="bottom">
   <mat-step [stepControl]="electionFormGroup" >
     <form [formGroup]="electionFormGroup" >
       <ng-template matStepLabel>Criar Eleição</ng-template>
@@ -68,9 +64,6 @@
       <div>
         <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
         <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
-
-        <!-- <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button> -->
       </div>
     </form>
   </mat-step>
@@ -85,8 +78,8 @@ A urna só poderá ser aberta para a eleição depois que todos os apuradores ca
     <form [formGroup]="trusteeFormGroup" >
       <mat-radio-group formControlName="trustee">
         <label>Apurador:</label>
-        <mat-radio-button value="helios" (click)="trusteeHelios()">Helios</mat-radio-button>
-        <mat-radio-button value="other" (click)="trusteeOther()">Outro</mat-radio-button>
+        <p><mat-radio-button value="helios" (click)="trusteeHelios()">Helios</mat-radio-button></p>
+        <p><mat-radio-button value="other" (click)="trusteeOther()">Outro</mat-radio-button></p>
       </mat-radio-group>
 
       <mat-form-field class="myGroupForm">
@@ -107,18 +100,18 @@ A urna só poderá ser aberta para a eleição depois que todos os apuradores ca
     <form [formGroup]="voterFormGroup" >
       <mat-radio-group formControlName="voter">
         <!-- <label>Eleitores:</label> -->
-        <mat-radio-button value="open" (click)="voterOpen()"> Qualquer eleitor que possa se conectar no sistema.</mat-radio-button>
-        <mat-radio-button value="close" (click)="voterClose()">Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)</mat-radio-button>
+        <p><mat-radio-button value="open" (click)="voterOpen()"> Qualquer eleitor que possa se conectar no sistema.</mat-radio-button></p>
+      <p><mat-radio-button value="close" (click)="voterClose()">Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)</mat-radio-button></p>
       </mat-radio-group>
-
-      <mat-form-field>
-        <!-- <button mat-raised-button color="primary" formControlName="loadVoter">carregar arquivo de eleitores</button> -->
-        <input matInput placeholder="Email" formControlName="loadVoter" required>
-      </mat-form-field>
     </form>
+    <div *ngIf="enableCSV()">
+      <p>
+          <input type="file"  id="theFile" (change)="onFileSelect($event)">
+      </p>
+    </div>
     <div>
       <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
-      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
+      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right" [disabled]="fileIsReady()">Avançar</button>
     </div>
   </mat-step>
   <mat-step>
