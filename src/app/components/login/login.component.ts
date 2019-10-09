@@ -18,16 +18,17 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginFormGroup = this._formBuilder.group({
-      username: ['',Validators.required],
+      username: ['', Validators.required],
       password: ['', Validators.required]
-    })
+    });
   }
 
-  logar(){
-      var results: Observable<any> = this.authService.login(this.loginFormGroup.value);
+  logar() {
+      const results: Observable<any> = this.authService.login(this.loginFormGroup.value);
       results.subscribe( res => {
-        localStorage.setItem('noiz',JSON.stringify(res));
-        this.router.navigate([''])
-      })
+        localStorage.setItem('noiz', JSON.stringify(res));
+        localStorage.setItem('token', JSON.stringify(res.token));
+        this.router.navigate(['']);
+      });
     }
 }

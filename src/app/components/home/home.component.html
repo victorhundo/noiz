@@ -1,81 +1,85 @@
-
-<mat-card class="login-box" >
-
-
-  <mat-card-content *ngIf="!hasElection()">
-    <h1 class="noneElection">NENHUMA ELEIÇÃO AINDA</h1>
-  </mat-card-content>
+<div *ngIf="!isReady" class="loading">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="isReady">
+  <mat-card class="login-box" >
 
 
-
-<mat-card-content *ngIf="hasElection()">
-
-  <mat-card class="mainElection">
-    <mat-toolbar>
-      <!-- <span>{{mainElection.name}}</span> -->
-      <mat-card-title>{{mainElection.name}}</mat-card-title>
-      <p><mat-card-subtitle class="subtitle">Criado(a) por: {{mainElection.admin}}</mat-card-subtitle></p>
-      <span class="example-spacer"></span>
-      <button mat-icon-button (click)="freeze()" *ngIf="isNotFreeze()">
-        <mat-icon aria-hidden="false">ac_unit</mat-icon>
-      </button>
-      <!-- <button mat-icon-button *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">archive</mat-icon>
-      </button>
-      <button mat-icon-button *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">edit</mat-icon>
-      </button>  -->
-      <button mat-icon-button *ngIf="canCompute()" (click)="compute_tally()">
-        <mat-icon aria-hidden="false">done_all</mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon aria-hidden="false">more_vert</mat-icon>
-      </button>
-    </mat-toolbar>
-    <mat-card-content class="description">
-      <p >{{mainElection.description}}</p>
+    <mat-card-content *ngIf="!hasElection()">
+      <h1 class="noneElection">NENHUMA ELEIÇÃO AINDA</h1>
     </mat-card-content>
-    <mat-card-actions style="padding: 20px;" align="end" class="electionActions">
-      <div *ngIf="!elecitonIsEnd(mainElection.voting_ends_at)">
-      <button mat-icon-button disabled class="end" style="color: #88ff02;">
-        <mat-icon aria-hidden="false">timer</mat-icon>
-        Encerramento: {{mainElection.voting_ends_at | date:'dd/MM/yyyy - h:mm'}}h
-      </button>
-      </div>
-      <div *ngIf="elecitonIsEnd(mainElection.voting_ends_at)" class="electionActions">
-      <button mat-icon-button disabled class="end" style="color: #88ff02;">
-        <mat-icon aria-hidden="false">timer</mat-icon>
-        Encerrada
-      </button>
-      </div>
-      <button mat-raised-button color="primary" [routerLink]="['/booth', mainElection.short_name]"  [disabled]="isNotFreeze()">VOTAR</button>
-    </mat-card-actions>
-  </mat-card>
-
-  <div class="electionsBox waves-effect waves-light" *ngIf="elections.length > 1">
-    <div *ngFor="let e of elections">
-    <mat-card class="election" *ngIf="!(e.uuid == mainElection.uuid)" (click)="changeMainElection(e)" >
-      <a href="#" class="electionBtn" matRipple>
-      <mat-card-title>{{e.name}}</mat-card-title>
-      </a>
+  
+  
+  
+  <mat-card-content *ngIf="hasElection()">
+  
+    <mat-card class="mainElection">
+      <mat-toolbar>
+        <!-- <span>{{mainElection.name}}</span> -->
+        <mat-card-title>{{mainElection.name}}</mat-card-title>
+        <p><mat-card-subtitle class="subtitle">Criado(a) por: {{mainElection.admin}}</mat-card-subtitle></p>
+        <span class="example-spacer"></span>
+        <button mat-icon-button (click)="freeze()" *ngIf="isNotFreeze()">
+          <mat-icon aria-hidden="false">ac_unit</mat-icon>
+        </button>
+        <!-- <button mat-icon-button *ngIf="hasAdmin()">
+          <mat-icon aria-hidden="false">archive</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="hasAdmin()">
+          <mat-icon aria-hidden="false">edit</mat-icon>
+        </button>  -->
+        <button mat-icon-button *ngIf="canCompute()" (click)="compute_tally()">
+          <mat-icon aria-hidden="false">done_all</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon aria-hidden="false">more_vert</mat-icon>
+        </button>
+      </mat-toolbar>
+      <mat-card-content class="description">
+        <p >{{mainElection.description}}</p>
+      </mat-card-content>
+      <mat-card-actions style="padding: 20px;" align="end" class="electionActions">
+        <div *ngIf="!elecitonIsEnd(mainElection.voting_ends_at)">
+        <button mat-icon-button disabled class="end" style="color: #88ff02;">
+          <mat-icon aria-hidden="false">timer</mat-icon>
+          Encerramento: {{mainElection.voting_ends_at | date:'dd/MM/yyyy - h:mm'}}h
+        </button>
+        </div>
+        <div *ngIf="elecitonIsEnd(mainElection.voting_ends_at)" class="electionActions">
+        <button mat-icon-button disabled class="end" style="color: #88ff02;">
+          <mat-icon aria-hidden="false">timer</mat-icon>
+          Encerrada
+        </button>
+        </div>
+        <button mat-raised-button color="primary" [routerLink]="['/booth', mainElection.short_name]"  [disabled]="isNotFreeze()">VOTAR</button>
+      </mat-card-actions>
     </mat-card>
+  
+    <div class="electionsBox waves-effect waves-light" *ngIf="elections.length > 1">
+      <div *ngFor="let e of elections">
+      <mat-card class="election" *ngIf="!(e.uuid == mainElection.uuid)" (click)="changeMainElection(e)" >
+        <a href="#" class="electionBtn" matRipple>
+        <mat-card-title>{{e.name}}</mat-card-title>
+        </a>
+      </mat-card>
+      </div>
     </div>
-  </div>
-
-</mat-card-content>
-
-</mat-card>
-
-<button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [matMenuTriggerFor]="menu">
-  <mat-icon>add</mat-icon>
-</button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item [routerLink]="['/elections/new']">
-    <mat-icon>how_to_vote</mat-icon>
-    <span>Eleição</span>
+  
+  </mat-card-content>
+  
+  </mat-card>
+  
+  <button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [matMenuTriggerFor]="menu">
+    <mat-icon>add</mat-icon>
   </button>
-  <button mat-menu-item [routerLink]="['/users/new']">
-    <mat-icon>person</mat-icon>
-    <span>Usuário</span>
-  </button>
-</mat-menu>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item [routerLink]="['/elections/new']">
+      <mat-icon>how_to_vote</mat-icon>
+      <span>Eleição</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/users/new']">
+      <mat-icon>person</mat-icon>
+      <span>Usuário</span>
+    </button>
+  </mat-menu>
+</div>

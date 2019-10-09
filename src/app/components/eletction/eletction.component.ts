@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef,} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl, ControlContainer} from '@angular/forms';
 import { ElectionService } from 'src/app/services/election.service';
 import { Observable } from 'rxjs';

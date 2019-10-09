@@ -4,6 +4,9 @@ import { ElectionService } from 'src/app/services/election.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -14,23 +17,49 @@ export class HomeComponent implements OnInit {
 
   user: any;
   elections: any;
-  mainElection: any = {'name':'', 'description':''};;
+  isReady = false;
+  mainElection: any = {name: '', description: '' };
 
-  constructor(private router: Router, private authService: AuthService, private electionService: ElectionService, private location: Location) {
-    this.user = this.authService.getUser();
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private electionService: ElectionService,
+    private location: Location) {
+      const hasLogged: Observable<any> = this.authService.hasLogged();
+      const getElections: Observable<any> = this.electionService.getElections();
+      const rejectLogged = hasLogged.pipe(catchError(error => of(error)));
+      getElections.pipe(catchError(error => of(error)));
+      forkJoin(hasLogged, getElections).subscribe(([res1, res2]) => {
+        this.authHandling(res1);
+        this.electionHandling(res2);
+      });
+    }
+
+    ngOnInit() {
+      this.user = this.authService.getUser();
+      // if (this.authService.getToken() == null) { this.router.navigate(['login']); 
+    }
+
+  authHandling(res: any) {
+    if (!res.message.hasLogged) {
+      localStorage.clear();
+      this.router.navigate(['login']);
+   }
   }
 
-  ngOnInit() {
-    if(this.authService.getToken() == null) this.router.navigate(['login']);
-    this.hasLogged()
-    this.getElections()
+  electionHandling(res: any) {
+    this.elections = res;
+    if (res.length > 0) {
+      this.mainElection = res[0];
+    }
+    this.isReady = true;
   }
 
   hasAdmin() {
     return this.user.admin_p;
   }
 
-  hasElection(){
+  hasElection() {
     return this.elections.length > 0;
   }
 
@@ -38,56 +67,47 @@ export class HomeComponent implements OnInit {
     return Array(n);
   }
 
-  getElections(){
-    var results: Observable<any> = this.electionService.getElections();
+  getElections() {
+    const results: Observable<any> = this.electionService.getElections();
     results.subscribe( res => {
        this.elections = res;
-       if (res.length > 0){
-         this.mainElection = res[0]
+       if (res.length > 0) {
+         this.mainElection = res[0];
        }
-       console.log(this.mainElection)
-    })
+       console.log(this.mainElection);
+    });
   }
 
   freeze() {
-    var results: Observable<any> = this.electionService.freezeElection(this.mainElection.uuid,'freeze');
+    const results: Observable<any> = this.electionService.freezeElection(this.mainElection.uuid, 'freeze');
     results.subscribe( res => {
-       console.log(res)
-       location.reload()
-    })
+       console.log(res);
+       location.reload();
+    });
   }
 
-  isNotFreeze(){
+  isNotFreeze() {
     return this.mainElection.frozen_at == null && this.hasAdmin();
   }
 
-  hasLogged(){
-      var results: Observable<any> = this.authService.hasLogged();
-      results.subscribe( res => {
-         if(!res.hasLogged){
-           this.router.navigate(['login'])
-        }
-      })
-    }
-
-  changeMainElection(e:any) {
+  changeMainElection(e: any) {
     this.mainElection = e;
   }
 
-  elecitonIsEnd(date:string){
-    var endTime: Date = new Date(Date.parse(date));
+  elecitonIsEnd(date: string) {
+    const endTime: Date = new Date(Date.parse(date));
     return endTime.getTime() < Date.now();
   }
 
-  canCompute(){
-    return !this.isNotFreeze()
+  canCompute() {
+    return !this.isNotFreeze();
   }
 
-  compute_tally(){
-    var results: Observable<any> = this.electionService.computeTally(this.mainElection.uuid);
-      results.subscribe( res => {
-        location.reload()
-      })
+  compute_tally() {
+    const results: Observable<any> = this.electionService.computeTally(this.mainElection.uuid);
+    results.subscribe( res => {
+        location.reload();
+    });
   }
 
 }
