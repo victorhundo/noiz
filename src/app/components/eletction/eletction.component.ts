@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { of } from 'rxjs';
+import { MatStepper } from '@angular/material';
 
 @Component({
   selector: 'app-eletction',
@@ -56,6 +57,7 @@ export class EletctionComponent implements OnInit {
       result_type: 'absoluta'
     });
     this.addAnswer();
+    this.addAnswer();
     this.trusteeFormGroup = this.formBuilder.group({
       name: [{value: 'Sistema de Votação Eletrônica', disabled: true}, Validators.required],
       email: [{value: 'heliosvoting.pt@gmail.com',  disabled: true}, Validators.required],
@@ -68,6 +70,13 @@ export class EletctionComponent implements OnInit {
     });
   }
 
+  goForward(stepper: MatStepper, isDisable?: boolean) {
+    if (!isDisable) { stepper.next(); }
+  }
+
+  goBack(stepper: MatStepper, isDisable?: boolean) {
+    if (!isDisable) { stepper.previous(); }
+  }
 
   createElection() {
     const results: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
@@ -140,6 +149,11 @@ export class EletctionComponent implements OnInit {
   voterClose() {
     this.voterFormGroup.get('loadVoter').enable();
     this.fileDisable = true;
+  }
+
+  minAnswer() {
+    const array: FormArray = this.questionFormGroup.get('answers') as FormArray;
+    return (array.length > 2);
   }
 
   submit() {

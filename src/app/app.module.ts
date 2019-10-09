@@ -20,6 +20,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpConfigInterceptor} from './interceptor/httpconfig.interceptor';
@@ -74,7 +75,8 @@ import { ErrorDialogComponent } from './components/error-dialog/error-dialog.com
     MatMenuModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonToggleModule
   ],
   providers: [
     {

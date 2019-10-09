@@ -1,126 +1,125 @@
-<mat-horizontal-stepper [linear]="true" #stepper class="election-box" labelPosition="bottom">
-  <mat-step [stepControl]="electionFormGroup" >
-    <form [formGroup]="electionFormGroup" >
-      <ng-template matStepLabel>Criar Eleição</ng-template>
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Nome abreviado" formControlName="short_name" required>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Nome" formControlName="name" required>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <textarea matInput placeholder="Descrição" formControlName="description" required></textarea>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Endereço de Email para Ajuda" formControlName="help_email" required>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <input type="date" matInput placeholder="Votação começa em" formControlName="voting_starts_at" required>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <input type="date" matInput placeholder="Votação termina em" formControlName="voting_ends_at" required>
-      </mat-form-field>
-      <div class="myGroupForm">
-        <mat-checkbox formControlName="use_voter_aliases" >Usar pseudônimo de eleitores</mat-checkbox>
-      </div>
-      <div class="myGroupForm">
-        <mat-checkbox formControlName="use_advanced_audit_features">Usar auditoria de cédulas</mat-checkbox>
-      </div>
-      <div class="myGroupForm">
-        <mat-checkbox formControlName="randomize_answer_order">Tornar ordem das questões aleatória</mat-checkbox>
-      </div>
-      <div class="myGroupForm">
-        <mat-checkbox formControlName="private_p">Privada?</mat-checkbox>
-      </div>
-    </form>
-    <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
-  </mat-step>
-  <mat-step [stepControl]="questionFormGroup">
-    <form [formGroup]="questionFormGroup">
-      <ng-template matStepLabel>Adicionar Questões</ng-template>
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Pergunta" formControlName="question" required>
-      </mat-form-field>
-      <div formArrayName="answers">
-        <div *ngFor="let answer of answersForm.controls; let i=index" [formGroupName]=i>
-          <mat-form-field class="myGroupFormAnswer">
-            <input matInput placeholder="Resposta {{i + 1}}" formControlName="answer">
-          </mat-form-field>
-          <button mat-mini-fab (click)="deleteAnswer(i)">
-              <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
-      <div formArrayName="answer_urls">
-      <div *ngFor="let answer_urls of answersUrlForm.controls; let j=index" [formGroupName]=j>
+<div class="election-box">
+  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
+    <mat-step [stepControl]="electionFormGroup" >
+      <form [formGroup]="electionFormGroup" >
+        <ng-template matStepLabel>Criar Eleição</ng-template>
         <mat-form-field class="myGroupForm">
-          <input matInput placeholder="Link para mais informações sobre Resposta {{j + 1}}" formControlName="answer_urls">
+          <input matInput placeholder="Nome abreviado" formControlName="short_name" required>
         </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Nome" formControlName="name" required>
+        </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <textarea matInput placeholder="Descrição" formControlName="description" required></textarea>
+        </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Endereço de Email para Ajuda" formControlName="help_email" required>
+        </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <input type="date" matInput placeholder="Votação começa em" formControlName="voting_starts_at" required>
+        </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <input type="date" matInput placeholder="Votação termina em" formControlName="voting_ends_at" required>
+        </mat-form-field>
+      </form>
+      <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="goForward(stepper)"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
+          </mat-button-toggle-group>
       </div>
+    </mat-step>
+    <mat-step [stepControl]="questionFormGroup">
+      <form [formGroup]="questionFormGroup">
+        <ng-template matStepLabel>Adicionar Questões</ng-template>
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Pergunta" formControlName="question" required>
+        </mat-form-field>
+        <div formArrayName="answers">
+          <div *ngFor="let answer of answersForm.controls; let i=index" [formGroupName]=i>
+            <mat-form-field class="myGroupFormAnswer">
+              <input matInput placeholder="Resposta {{i + 1}}" formControlName="answer">
+            </mat-form-field>
+            <button mat-mini-fab (click)="deleteAnswer(i)" *ngIf="minAnswer()">
+                <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div formArrayName="answer_urls">
+        <div *ngFor="let answer_urls of answersUrlForm.controls; let j=index" [formGroupName]=j>
+          <mat-form-field class="myGroupFormAnswer">
+            <input matInput placeholder="Link para mais informações sobre Resposta {{j + 1}}" formControlName="answer_urls">
+          </mat-form-field>
+        </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="addAnswer()">Adicionar Resposta</button>
+        <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="goForward(stepper)"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Apuradores</ng-template>
+      <p>Adicione aqui as pessoas que poderão apurar o resultado da eleição. Cada uma das pessoas indicadas como apurador receberá um e-mail para que criem seu par de chaves criptográficas e que carreguem sua chave pública para esta eleição.
+  A urna só poderá ser aberta para a eleição depois que todos os apuradores cadastrados entrarem na interface de apuração e fornecerem sua chave privada.</p>
+      <p>ATENÇÃO: Se um apurador perder sua chave, a urna não poderá ser aberta e todos os votos serão perdidos.</p>
+  
+  
+  
+      <form [formGroup]="trusteeFormGroup" >
+        <mat-radio-group formControlName="trustee">
+          <label>Apurador:</label>
+          <p><mat-radio-button value="helios" (click)="trusteeHelios()">Helios</mat-radio-button></p>
+          <p><mat-radio-button value="other" (click)="trusteeOther()">Outro</mat-radio-button></p>
+        </mat-radio-group>
+  
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Nome" formControlName="name" required>
+        </mat-form-field>
+        <mat-form-field class="myGroupForm">
+          <input matInput placeholder="Email" formControlName="email" required>
+        </mat-form-field>
+      </form>
+  
+      <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="goForward(stepper)"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Eleitores</ng-template>
+      <form [formGroup]="voterFormGroup" >
+        <mat-radio-group formControlName="voter">
+          <p><mat-radio-button value="open" (click)="voterOpen()"> Qualquer eleitor que possa se conectar no sistema.</mat-radio-button></p>
+        <p><mat-radio-button value="close" (click)="voterClose()">Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)</mat-radio-button></p>
+        </mat-radio-group>
+      </form>
+      <div *ngIf="enableCSV()">
+        <p>
+            <input type="file"  id="theFile" (change)="onFileSelect($event)">
+        </p>
       </div>
-      <button mat-mini-fab (click)="addAnswer()">
-          <mat-icon>add</mat-icon>
-      </button>
-      <div>
-        <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
-        <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
+      <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="goForward(stepper,fileIsReady())" [disabled]="fileIsReady()"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
+          </mat-button-toggle-group>
       </div>
-    </form>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Apuradores</ng-template>
-    <p>Adicione aqui as pessoas que poderão apurar o resultado da eleição. Cada uma das pessoas indicadas como apurador receberá um e-mail para que criem seu par de chaves criptográficas e que carreguem sua chave pública para esta eleição.
-A urna só poderá ser aberta para a eleição depois que todos os apuradores cadastrados entrarem na interface de apuração e fornecerem sua chave privada.</p>
-    <p>ATENÇÃO: Se um apurador perder sua chave, a urna não poderá ser aberta e todos os votos serão perdidos.</p>
-
-
-
-    <form [formGroup]="trusteeFormGroup" >
-      <mat-radio-group formControlName="trustee">
-        <label>Apurador:</label>
-        <p><mat-radio-button value="helios" (click)="trusteeHelios()">Helios</mat-radio-button></p>
-        <p><mat-radio-button value="other" (click)="trusteeOther()">Outro</mat-radio-button></p>
-      </mat-radio-group>
-
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Nome" formControlName="name" required>
-      </mat-form-field>
-      <mat-form-field class="myGroupForm">
-        <input matInput placeholder="Email" formControlName="email" required>
-      </mat-form-field>
-    </form>
-
-    <div>
-      <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
-      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right">Avançar</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Eleitores</ng-template>
-    <form [formGroup]="voterFormGroup" >
-      <mat-radio-group formControlName="voter">
-        <!-- <label>Eleitores:</label> -->
-        <p><mat-radio-button value="open" (click)="voterOpen()"> Qualquer eleitor que possa se conectar no sistema.</mat-radio-button></p>
-      <p><mat-radio-button value="close" (click)="voterClose()">Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)</mat-radio-button></p>
-      </mat-radio-group>
-    </form>
-    <div *ngIf="enableCSV()">
-      <p>
-          <input type="file"  id="theFile" (change)="onFileSelect($event)">
-      </p>
-    </div>
-    <div>
-      <button mat-raised-button color="primary" matStepperPrevious>Voltar</button>
-      <button mat-raised-button color="primary" matStepperNext class="bt-bottom-right" [disabled]="fileIsReady()">Avançar</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Finalizar</ng-template>
-    You are now done.
-    <div>
-      <!-- <button mat-button matStepperPrevious>Back</button> -->
-      <button mat-raised-button color="primary" class="bt-bottom-right" (click)="submit()">Enviar</button>
-      <button mat-raised-button color="primary" matStepperPrevious >Voltar</button>
-    </div>
-  </mat-step>
-</mat-horizontal-stepper>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Finalizar</ng-template>
+      You are now done.
+      <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="submit()">Enviar</mat-button-toggle>
+          </mat-button-toggle-group>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
