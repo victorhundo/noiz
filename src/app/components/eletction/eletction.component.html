@@ -1,10 +1,10 @@
 <div class="election-box">
-  <mat-horizontal-stepper [linear]="false" #stepper labelPosition="bottom">
+  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
     <mat-step [stepControl]="electionFormGroup" >
       <form [formGroup]="electionFormGroup" >
         <ng-template matStepLabel>Criar Eleição</ng-template>
-        <mat-form-field class="myGroupForm">
-          <input matInput placeholder="Nome abreviado" formControlName="short_name" required>
+        <mat-form-field class="myGroupForm" hintLabel="Máximo 10 caracteres. Caracteres especiais não permitido">
+          <input matInput placeholder="Nome abreviado" formControlName="short_name" style="text-transform:lowercase" required>
         </mat-form-field>
         <mat-form-field class="myGroupForm">
           <input matInput placeholder="Nome" formControlName="name" required>
@@ -16,10 +16,18 @@
           <input matInput placeholder="Endereço de Email para Ajuda" formControlName="help_email" required>
         </mat-form-field>
         <mat-form-field class="myGroupForm">
-          <input type="date" matInput placeholder="Votação começa em" formControlName="voting_starts_at" required>
+          <!-- <input type="date" matInput placeholder="Votação começa em" formControlName="voting_starts_at" required> -->
+          <mat-placeholder>Votação começa em</mat-placeholder>
+          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+          <mat-datetimepicker #datetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+          <input matInput formControlName="voting_starts_at" [matDatetimepicker]="datetimePicker" required autocomplete="false">
         </mat-form-field>
         <mat-form-field class="myGroupForm">
-          <input type="date" matInput placeholder="Votação termina em" formControlName="voting_ends_at" required>
+          <!-- <input type="date" matInput placeholder="Votação termina em" formControlName="voting_ends_at" required> -->
+          <mat-placeholder>Votação termina em</mat-placeholder>
+          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+          <mat-datetimepicker #datetimePicker2 type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+          <input matInput formControlName="voting_ends_at" [matDatetimepicker]="datetimePicker2" required autocomplete="false">
         </mat-form-field>
       </form>
       <div style="text-align: center">

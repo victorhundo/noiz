@@ -22,6 +22,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
+
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpConfigInterceptor} from './interceptor/httpconfig.interceptor';
 
@@ -38,6 +39,9 @@ import { BoothComponent } from './components/booth/booth.component';
 import { UserComponent } from './components/user/user.component';
 import { NewUserComponent } from './components/user/new/new.component';
 import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
+import { MatDatepickerModule } from '@angular/material';
+import { MatMomentDatetimeModule } from '@mat-datetimepicker/moment';
+import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 
 @NgModule({
   declarations: [
@@ -76,7 +80,10 @@ import { ErrorDialogComponent } from './components/error-dialog/error-dialog.com
     MatTableModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatDatepickerModule,
+    MatMomentDatetimeModule,
+    MatDatetimepickerModule
   ],
   providers: [
     {

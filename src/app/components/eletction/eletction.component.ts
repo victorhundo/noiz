@@ -35,10 +35,10 @@ export class EletctionComponent implements OnInit {
     });
     this.trusteeOption = 1;
     this.electionFormGroup = this.formBuilder.group({
-      short_name: ['', Validators.required],
+      short_name: ['', Validators.compose([ Validators.required, Validators.pattern('^[a-zA-Z0-9_]*$')])],
       name: ['', Validators.required],
       description: ['', Validators.required],
-      help_email: ['', Validators.required],
+      help_email: ['', Validators.compose([ Validators.required, Validators.email]) ],
       voting_starts_at: ['', Validators.required],
       voting_ends_at: ['', Validators.required],
       use_voter_aliases: false,

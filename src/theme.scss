@@ -6,3 +6,8 @@ $my-app-accent:  mat-palette($mat-gray, 100);
 $my-app-warn:    mat-palette($mat-red, 500);
 $my-app-theme: mat-dark-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
+
+@import '~@mat-datetimepicker/core/datetimepicker/datetimepicker-theme.scss';
+
+// Using the $theme variable from the pre-built theme you can call the theming function
+@include mat-datetimepicker-theme($my-app-theme);
