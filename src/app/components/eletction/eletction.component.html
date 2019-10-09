@@ -1,5 +1,5 @@
 <div class="election-box">
-  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
+  <mat-horizontal-stepper [linear]="false" #stepper labelPosition="bottom">
     <mat-step [stepControl]="electionFormGroup" >
       <form [formGroup]="electionFormGroup" >
         <ng-template matStepLabel>Criar Eleição</ng-template>
@@ -56,7 +56,7 @@
         <div style="text-align: center">
           <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
             <mat-button-toggle (click)="goBack(stepper)"><mat-icon aria-hidden="false">navigate_before</mat-icon></mat-button-toggle>
-            <mat-button-toggle (click)="goForward(stepper)"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
+            <mat-button-toggle (click)="joinAnswer(stepper)"><mat-icon aria-hidden="false">navigate_next</mat-icon></mat-button-toggle>
           </mat-button-toggle-group>
         </div>
       </form>
@@ -102,6 +102,7 @@
       <div *ngIf="enableCSV()">
         <p>
             <input type="file"  id="theFile" (change)="onFileSelect($event)">
+            <mat-button-toggle (click)="addVoters2()">Carregar</mat-button-toggle>
         </p>
       </div>
       <div style="text-align: center">

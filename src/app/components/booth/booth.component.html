@@ -1,3 +1,4 @@
+{{questions | json}}
 <mat-card class="login-box">
   <mat-card-title style="width:100%; text-align:center;" >{{election.name}}</mat-card-title>
 <mat-horizontal-stepper [linear]="true" #stepper class="boothForm" labelPosition="bottom">
@@ -18,7 +19,7 @@
         <div *ngFor="let q of questions">
           <p *ngFor="let a of q.answers; let i = index" [attr.data-index]="i">
             <mat-radio-button value="{{i}}">
-              {{q.answers[i]}}
+              {{a}}
             </mat-radio-button>
             <a mat-icon-button href="{{q.answer_urls[i]}}" target="_blank">
               <mat-icon aria-hidden="false">launch</mat-icon>

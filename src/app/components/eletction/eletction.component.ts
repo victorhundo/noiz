@@ -78,13 +78,6 @@ export class EletctionComponent implements OnInit {
     if (!isDisable) { stepper.previous(); }
   }
 
-  createElection() {
-    const results: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
-    results.subscribe( res => {
-      console.log(res);
-    });
-  }
-
   enableCSV() {
     return !(this.voterFormGroup.get('voter').value === 'open');
   }
@@ -156,27 +149,26 @@ export class EletctionComponent implements OnInit {
     return (array.length > 2);
   }
 
-  submit() {
+  joinAnswer(stepper: MatStepper ) {
+    if (this.electionFormGroup.contains('questions')) { this.electionFormGroup.removeControl('questions'); }
     this.electionFormGroup.addControl('questions', this.formBuilder.array([]));
     this.QuestionForm.push(this.questionFormGroup);
+    this.goForward(stepper);
+  }
+
+  submit() {
     const resultsElection: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
     resultsElection.subscribe( res => {
       const trusteeRequest: Observable<any> = this.trusteeRequest(res.message.uuid, this.trusteeFormGroup.get('trustee').value);
       const voterRequest: Observable<any> = this.voterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       const createVoters: Observable<any> = this.createVoterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       forkJoin(trusteeRequest, voterRequest, createVoters).subscribe(results => {
-        let test = { sucess:  true, msg: 'sucesso' };
-        results.forEach(e => {
-          if (!(e.status === 201)) { test = { sucess:  false, msg: e.message }; }
-        });
-        if (test.sucess) {
-          this.router.navigate(['']);
-        } else {
-          console.log(test);
-        }
+        // this.router.navigate(['']);
+        console.log(results);
       });
     });
   }
+
 
   trusteeRequest(uuid: string, type: string) {
     if (type === 'helios') {
@@ -194,7 +186,7 @@ export class EletctionComponent implements OnInit {
     }
   }
 
-  createVoterRequest(uuid: string, type: string){
+  createVoterRequest(uuid: string, type: string) {
     if (type === 'open') {
       return of<any>({status: 201}); // Empty Observable: if election is open do not need this
     } else {
