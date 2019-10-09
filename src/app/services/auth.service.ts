@@ -15,17 +15,22 @@ export class AuthService {
     return this.http.post(`${API}/auth/password/`, data );
   }
 
-  hasLogged(): Observable<any>{
-    return this.http.get(`${API}/auth/check`);
+  hasLogged(): Observable<any> {
+    return this.http.get(`${API}/auth/check/`);
   }
 
   public getToken(): any {
-    if (localStorage.getItem('noiz') == null) return null
-    return JSON.parse(localStorage.getItem('noiz'))["token"];
+    const checkLocalStorage: boolean = localStorage.getItem('token') === null;
+    if (checkLocalStorage) { return null; } else {
+      return JSON.parse(localStorage.getItem('token'));
+    }
   }
 
   public getUser(): any {
-    if (localStorage.getItem('noiz') == null) return null
-    return JSON.parse(localStorage.getItem('noiz'))["user"];
+    if (localStorage.getItem('noiz') == null) {
+      return null;
+    } else {
+      return JSON.parse(localStorage.getItem('noiz')).user;
+    }
   }
 }

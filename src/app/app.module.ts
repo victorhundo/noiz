@@ -18,12 +18,11 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatRippleModule} from '@angular/material/core';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatTableModule} from '@angular/material/table';
-
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtModule } from '@auth0/angular-jwt';
-import { TokenInterceptor } from './token.interceptor';
+import { HttpConfigInterceptor} from './interceptor/httpconfig.interceptor';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -37,11 +36,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { BoothComponent } from './components/booth/booth.component';
 import { UserComponent } from './components/user/user.component';
 import { NewUserComponent } from './components/user/new/new.component';
-import { FormPart1Component } from './components/election/form-part1/form-part1.component';
-
-export function tokenGetter() {
-  return localStorage.getItem('noiz')["token"];
-}
+import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
 
 @NgModule({
   declarations: [
@@ -55,15 +50,9 @@ export function tokenGetter() {
     BoothComponent,
     UserComponent,
     NewUserComponent,
-    FormPart1Component
+    ErrorDialogComponent
   ],
   imports: [
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        headerName: 'x-session-token'
-      }
-    }),
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -83,15 +72,18 @@ export function tokenGetter() {
     MatRadioModule,
     MatRippleModule,
     MatMenuModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
+      useClass: HttpConfigInterceptor,
       multi: true
     }
   ],
+  entryComponents: [ErrorDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
