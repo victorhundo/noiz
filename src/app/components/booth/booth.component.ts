@@ -4,6 +4,7 @@ import { ElectionService } from 'src/app/services/election.service';
 import {FormBuilder, FormGroup, Validators, FormArray} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EncryptedVote } from 'src/app/models/encryptedVote';
+import unescapeJs from 'unescape-js';
 declare var b64_sha256:any;
 declare var BigInt:any; 
 
@@ -35,9 +36,10 @@ export class BoothComponent implements OnInit {
   }
 
   private normalizeUnicode(a:string) {
+    a = unescapeJs(a);
     a = a.replace(/u'/g,'\'').replace(/'/g,'"');
     var result:any = []
-    JSON.parse(a).forEach(e => {
+    JSON.parse(decodeURIComponent(a)).forEach(e => {
       result.push({
         "answer_urls":e.answer_urls,
         "answers": e.answers,
