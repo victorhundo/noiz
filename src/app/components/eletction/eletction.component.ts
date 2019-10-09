@@ -163,8 +163,7 @@ export class EletctionComponent implements OnInit {
       const voterRequest: Observable<any> = this.voterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       const createVoters: Observable<any> = this.createVoterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       forkJoin(trusteeRequest, voterRequest, createVoters).subscribe(results => {
-        // this.router.navigate(['']);
-        console.log(results);
+        this.router.navigate(['']);
       });
     });
   }
