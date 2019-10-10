@@ -1,50 +1,76 @@
-{{questions | json}}
-<mat-card class="login-box">
-  <mat-card-title style="width:100%; text-align:center;" >{{election.name}}</mat-card-title>
-<mat-horizontal-stepper [linear]="true" #stepper class="boothForm" labelPosition="bottom">
-  <mat-step [editable]="false">
-    <ng-template matStepLabel>Instruções</ng-template>
-    <p>Para votar nessa eleição é necessário que siga os passos abaixo:<p>
-      <p>1. <u>Marcar</u> suas escolhas.</p>
-      <p>2. <u>Revisar & Confirmar</u> suas escolhas.</p>
-      <p>3. <u>Depositar</u> sua cédula cifrada na urna.</p>
-
-    <button mat-raised-button matStepperNext >Next</button>
-  </mat-step>
-  <mat-step [stepControl]="firstFormGroup" [editable]="false">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Marcar</ng-template>
-      <mat-radio-group formControlName="answer" >
-        <h2 class="questionTitle">{{questions.question}}</h2>
-        <div *ngFor="let q of questions">
-          <p *ngFor="let a of q.answers; let i = index" [attr.data-index]="i">
-            <mat-radio-button value="{{i}}">
-              {{a}}
-            </mat-radio-button>
-            <a mat-icon-button href="{{q.answer_urls[i]}}" target="_blank">
-              <mat-icon aria-hidden="false">launch</mat-icon>
-            </a>
-          </p>
-        </div>
-      </mat-radio-group>
-      <div>
-        <button mat-button matStepperNext class="netxBtn">Next</button>
+<div *ngIf="encrypting" class="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<div class="login-box">
+  <mat-card style="text-align:center;">
+      <mat-card-title >Cabine de Votação: {{election.name}}</mat-card-title>
+      <mat-card-subtitle>Código de identificação: {{election.hash}}</mat-card-subtitle>
+  </mat-card>
+  <mat-vertical-stepper [linear]="true" #stepper>
+    <mat-step [editable]="false">
+      <ng-template matStepLabel>Instruções</ng-template>
+      <p>Para votar nessa eleição é necessário que siga os passos abaixo:<p>
+        <p>1. <u>Marcar</u> sua(s) escolha(s).</p>
+        <p>2. <u>Revisar & Confirmar</u> sua(s) escolha(s).</p>
+        <p>3. <u>Depositar</u> sua cédula cifrada na urna.</p>
+      <div style="text-align: center">
+          <mat-button-toggle-group>
+            <mat-button-toggle (click)="goForward(stepper)" >Próximo</mat-button-toggle>
+          </mat-button-toggle-group>
       </div>
-    </form>
-  </mat-step>
-  <mat-step [editable]="false">
-    <ng-template matStepLabel>Revisar</ng-template>
-    <h2 class="questionTitle">Revise sua cédula</h2>
-    <p>{{getAnswer()}}</p>
-    <button mat-button matStepperNext>Next</button>
-  </mat-step>
-  <mat-step [editable]="false">
-    <ng-template matStepLabel>Depositar</ng-template>
-    You are now done.
-    <div>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-      <button mat-raised-button color="primary" (click)="submit()">Depositar Cédula na Urna</button>
-    </div>
-  </mat-step>
-</mat-horizontal-stepper>
-</mat-card>
+    </mat-step>
+    <mat-step [stepControl]="firstFormGroup" [editable]="false">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Marcar</ng-template>
+        <mat-radio-group formControlName="answer" >
+          <div *ngFor="let q of questions">
+              <h2>{{q.question}}</h2>
+            <p *ngFor="let a of q.answers; let i = index" [attr.data-index]="i">
+              <mat-radio-button value="{{i}}">
+                {{a}}
+              </mat-radio-button>
+              <a mat-icon-button href="{{q.answer_urls[i]}}" target="_blank">
+                <mat-icon aria-hidden="false">launch</mat-icon>
+              </a>
+            </p>
+          </div>
+        </mat-radio-group>
+        <div>
+          <!-- <button mat-raised-button matStepperNext >Next</button> -->
+          <div style="text-align: center">
+              <mat-button-toggle-group>
+                <mat-button-toggle (click)="goForward(stepper)" >Próximo</mat-button-toggle>
+              </mat-button-toggle-group>
+          </div>
+  
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [editable]="false">
+      <ng-template matStepLabel>Revisar</ng-template>
+      <div *ngFor="let q of questions">
+          <h3>Para a pergunta: '{{q.question}}' você escolheu a opção:</h3>
+          <h2>{{q.answers[getAnswer()]}}</h2>
+      </div>
+      <div style="text-align: center">
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle (click)="stepper.reset()" style="background:orange; color:black">Corrigir</mat-button-toggle>
+            <mat-button-toggle (click)="doEncrypted(stepper)" style="background: green">Cifrar Cédula</mat-button-toggle>
+          </mat-button-toggle-group>
+      </div>
+    </mat-step>
+    <mat-step [editable]="false" >
+      <ng-template matStepLabel>Depositar</ng-template>
+      <div style="text-align: center">
+        <h2 style="margin-bottom: 0px">Sua cédula está cifrada e pronta para ser depositada na urna.</h2>
+        <p style="margin-top: 0px"> Antes de depositar na urna, você pode anotar seu rastreador de cédula</p>
+        <mat-card class="hashBooth">{{encryptedVoteHash}}</mat-card>
+        <div>
+            <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+              <mat-button-toggle (click)="submit()" style="background: green">Depositar Cédula na Urna</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
