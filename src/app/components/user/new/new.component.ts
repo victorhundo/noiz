@@ -23,7 +23,6 @@ export class NewUserComponent implements OnInit {
   
   ngOnInit() {
     this.userFormGroup = this._formBuilder.group({
-      username: ['', Validators.required],
       name: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
@@ -32,11 +31,10 @@ export class NewUserComponent implements OnInit {
 
   createUser() {
     var data:any = {
-      "user_id": this.userFormGroup.get('username').value,
+      "user_id": this.userFormGroup.get('email').value,
       "name": this.userFormGroup.get('name').value,
       "info": {
         "password": this.userFormGroup.get('password').value,
-        "email": this.userFormGroup.get('email').value
       }
     }
     console.log(data)
