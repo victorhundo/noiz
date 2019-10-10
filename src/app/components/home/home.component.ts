@@ -87,7 +87,7 @@ export class HomeComponent implements OnInit {
   }
 
   isNotFreeze() {
-    return this.mainElection.frozen_at == null && this.hasAdmin();
+    return this.mainElection.frozen_at === null;
   }
 
   changeMainElection(e: any) {
@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
   }
 
   canCompute() {
-    return !this.isNotFreeze();
+    return !this.isNotFreeze() && this.hasAdmin();
   }
 
   compute_tally() {
