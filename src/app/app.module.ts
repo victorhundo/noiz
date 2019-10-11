@@ -42,6 +42,7 @@ import { ErrorDialogComponent } from './components/error-dialog/error-dialog.com
 import { MatDatepickerModule } from '@angular/material';
 import { MatMomentDatetimeModule } from '@mat-datetimepicker/moment';
 import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
+import { VerifierComponent } from './components/verifier/verifier.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
     BoothComponent,
     UserComponent,
     NewUserComponent,
-    ErrorDialogComponent
+    ErrorDialogComponent,
+    VerifierComponent
   ],
   imports: [
     BrowserModule,

@@ -50,4 +50,8 @@ export class ElectionService {
     // headers = headers.append('zumo-api-version', '2.0.0');
     return this.http.post(`${API}/elections/${id}/voters/upload`,data)
   }
+
+  getBallot(id: string): Observable<any> {
+    return this.http.get(`${API}/elections/${id}/ballots/`);
+  }
 }
