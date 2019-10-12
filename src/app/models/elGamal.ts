@@ -38,10 +38,9 @@ export class ElGamal {
       }
 
     static disjunctiveProofFromJSONObject(d:any){
-      if (d==null)
-        return null;
-        
-      return ElGamal.disjunctiveProof(d.map((p) =>{
+      if (d === null) { return null; }
+
+      return new DisjunctiveProof(d.map((p: any) => {
         return Proof.fromJSONObject(p);
       }));
     }
@@ -53,11 +52,11 @@ export class ElGamal {
       return new DisjunctiveProof(
         d.map((p:any) => {
           return new Proof(
-            new BigInt(p.commitment.A),
-            new BigInt(p.commitment.B),
-            new BigInt(p.challenge),
-            new BigInt(p.response)
-            );
+            new BigInt(p.commitment.A, 10),
+            new BigInt(p.commitment.B, 10),
+            new BigInt(p.challenge, 10),
+            new BigInt(p.response, 10)
+          );
         })
       );
     };

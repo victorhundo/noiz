@@ -5,11 +5,12 @@ import {Ciphertext} from './ciphertext.model';
 declare var BigInt:any;
 
 export class EncryptedAnswer {
-    choices: any;
-    randomness:any;
-    individual_proofs:any;
-    overall_proof:any;
-    answer:any;
+
+  choices: any;
+  randomness:any;
+  individual_proofs:any;
+  overall_proof:any;
+  answer:any;
 
     constructor(question:any, answer:any, pk:any) {
         // if nothing in the constructor
@@ -28,6 +29,30 @@ export class EncryptedAnswer {
         this.individual_proofs = enc_result.individual_proofs;
         this.overall_proof = enc_result.overall_proof;
       }
+
+    static fromJSONObject(encrypted_answer: any, election: any) {
+        var ea = new EncryptedAnswer(null,null,null);
+
+        ea.choices = encrypted_answer.choices.map((choice:any) => {
+          return Ciphertext.fromJSONObject(choice, election.public_key);
+        });
+        
+        ea.individual_proofs = encrypted_answer.individual_proofs.map((p:any) => {
+          return ElGamal.disjunctiveProofFromJSONObject(p);
+        });
+        
+        ea.overall_proof = ElGamal.disjunctiveProofFromJSONObject(encrypted_answer.overall_proof);
+        
+        // possibly load randomness and plaintext
+        if (encrypted_answer.randomness) {
+          ea.randomness = encrypted_answer.randomness.map((r) =>{
+            return new BigInt(r, 10);
+          });
+          ea.answer = encrypted_answer.answer;
+        }
+
+        return ea;
+    }
 
       doEncryption(question:any, answer:any, pk:any, randomness:any) {
         var choices: any = [];
@@ -91,28 +116,4 @@ export class EncryptedAnswer {
           'overall_proof' : overall_proof
         };
       }
-
-    static fromJSONObject(encrypted_answer:any, election:any, ){
-        var ea = new EncryptedAnswer(null,null,null);
-
-        ea.choices = encrypted_answer.choices.map((choice:any) => {
-          return Ciphertext.fromJSONObject(choice, election.public_key);
-        });
-        
-        ea.individual_proofs = encrypted_answer.individual_proofs.map((p:any) => {
-          return ElGamal.disjunctiveProofFromJSONObject(p);
-        });
-        
-        ea.overall_proof = ElGamal.disjunctiveProofFromJSONObject(encrypted_answer.overall_proof);
-        
-        // possibly load randomness and plaintext
-        if (encrypted_answer.randomness) {
-          ea.randomness = encrypted_answer.randomness.map((r) =>{
-            return BigInt.fromJSONObject(r);
-          });
-          ea.answer = encrypted_answer.answer;
-        }
-
-        return ea;
-    }
 }

@@ -51,7 +51,11 @@ export class ElectionService {
     return this.http.post(`${API}/elections/${id}/voters/upload`,data)
   }
 
-  getBallot(id: string): Observable<any> {
+  getBallots(id: string): Observable<any> {
     return this.http.get(`${API}/elections/${id}/ballots/`);
+  }
+
+  getLastBallot(idElection: string, idVoter: string): Observable<any> {
+    return this.http.get(`${API}/elections/${idElection}/ballots/${idVoter}/last/`);
   }
 }

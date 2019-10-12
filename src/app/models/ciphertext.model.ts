@@ -4,6 +4,7 @@ declare var hex_sha1:any;
 declare var BigInt:any;
 
 export class Ciphertext {
+
   alpha:any;
   beta:any;
   pk: any;
@@ -12,12 +13,16 @@ export class Ciphertext {
     this.alpha = alpha;
     this.beta = beta;
     this.pk = pk;
+  } 
+
+  static fromJSONObject(d: any,  pk: any) {
+    return new Ciphertext( new BigInt(d.alpha, 10), new BigInt(d.beta, 10), pk);
   }
 
   public toString = () : string => {
     return JSON.stringify({
-      "alpha": this.alpha.toString(),
-      "beta": this.beta.toString(),
+      'alpha': this.alpha.toString(),
+      'beta': this.beta.toString(),
     })
   }
 
@@ -92,10 +97,51 @@ export class Ciphertext {
     // set the real proof
     proofs[real_index] = real_proof;
     var val: any = new DisjunctiveProof(proofs);
-    return val.list_of_proofs;
+    return val.proofs;
   }
 
-  static fromJSONObject(d:any,  pk:any){
-    return new Ciphertext(BigInt.fromJSONObject(d.alpha), BigInt.fromJSONObject(d.beta), pk);
+  verifyDisjunctiveProof(listOfPlaintexts: any, disjProof: any, challengeGenerator: any) {
+    // let result = true;
+    // console.log(disjProof.proof)
+    const proofs = disjProof.proofs;
+
+    // for loop because we want to bail out of the inner loop
+    // if we fail one of the verifications.
+    for (let i = 0; i < listOfPlaintexts.length; i++) {
+      if (!this.verifyProof(listOfPlaintexts[i], proofs[i])) {
+        return false;
+      }
+    }
+
+    // check the overall challenge
+
+    // first the one expected from the proofs
+    
+    const commitments = proofs.map((proof: any) => proof.commitment);
+    const expectedChallenge = challengeGenerator(commitments);
+
+    // then the one that is the sum of the previous one.
+    let sum = new BigInt('0', 10);
+    proofs.forEach((proof: any) => { sum = sum.add(proof.challenge).mod(this.pk.q); });
+
+    return expectedChallenge.equals(sum);
   }
+
+  verifyProof(plaintext: any , proof: any, challengeGenerator?: any) {
+    // DH tuple to verify is
+    // g, y, alpha, beta/m
+    const betaOverM = this.beta.multiply(plaintext.m.modInverse(this.pk.p)).mod(this.pk.p);
+
+    return proof.verify(
+      this.pk.g,
+      this.pk.y,
+      this.alpha,
+      betaOverM,
+      this.pk.p,
+      this.pk.q,
+      challengeGenerator
+    );
+  }
+
+
 }
