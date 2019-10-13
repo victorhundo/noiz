@@ -37,7 +37,6 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
       this.user = this.authService.getUser();
-      // if (this.authService.getToken() == null) { this.router.navigate(['login']); 
     }
 
   authHandling(res: any) {
@@ -96,7 +95,11 @@ export class HomeComponent implements OnInit {
 
   elecitonIsEnd(date: string) {
     const endTime: Date = new Date(Date.parse(date));
-    return endTime.getTime() < Date.now();
+    if (endTime.getTime() < Date.now()) {
+      return 'Encerrada.';
+    } else {
+      return 'Encerramento: '  + endTime.toLocaleString('pt-br').split('.')[0];
+    }
   }
 
   canCompute() {

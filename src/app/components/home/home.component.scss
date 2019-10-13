@@ -24,9 +24,7 @@
   max-width: 800px;
   height: 250px;
   padding: 0px;
-  position:absolute; /*it can be fixed too*/
-  left:0; right:0;
-  top:0; bottom:0;
+
   margin:auto;
 }
 
@@ -59,7 +57,7 @@
 
 
 .md-fab-bottom-right {
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 20px;
 }

@@ -21,6 +21,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatExpansionModule} from '@angular/material/expansion'; 
 
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -85,7 +86,8 @@ import { VerifierComponent } from './components/verifier/verifier.component';
     MatButtonToggleModule,
     MatDatepickerModule,
     MatMomentDatetimeModule,
-    MatDatetimepickerModule
+    MatDatetimepickerModule,
+    MatExpansionModule
   ],
   providers: [
     {
