@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectionService } from 'src/app/services/election.service';
+import { LoggerService } from 'src/app/services/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import unescapeJs from 'unescape-js';
@@ -19,18 +20,20 @@ export class VerifierComponent implements OnInit {
   questions: any = [];
   count = 0;
   pk: any = {};
-  results: any = [];
+  displayedColumns: any = ["log"];
   overallResult = true;
   tally: any = [];
+  nAnswers = 0;
 
   constructor(
     private electionService: ElectionService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private logger: LoggerService) { }
 
   ngOnInit() {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
-    this.getElection();
+    this.getElection();   
   }
 
   private dateTimeFormat(a: string) {
@@ -118,24 +121,21 @@ export class VerifierComponent implements OnInit {
        this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
        this.election.election_hash = this.election.hash;
        this.election.public_key = this.keyBigInt(this.pk);
+       this.logger.append('eleição carregada: ' + this.election.name);
+       this.logger.append('código de identificação da eleição: ' + this.election.election_hash);
+       console.log(this.election);
+       this.nAnswers = this.election.questions[0].answers.length;
     });
   }
 
-  result_append(s: string) {
-    this.results[this.results.length] = s;
-  }
-
-
   verify() {
-    this.results = [];
+    this.logger.reset();
     this.count = 0;
 
-    this.result_append('eleição carregada: ' + this.election.name);
-    this.result_append('código de identificação da eleição: ' + this.election.election_hash);
 
     this.questions.forEach((q: any, index: number) => {
       if ( !(q.tally_type === 'homomorphic' )) {
-        this.result_append(
+        this.logger.append(
           'PROBLEMA: esta eleição não é uma eleição de apuração \
           homomórfica direta. Portanto,o Helios não pode verificá-la.');
         return;
@@ -146,24 +146,17 @@ export class VerifierComponent implements OnInit {
       });
     });
 
-    this.result_append('carregando lista de eleitores...');
+    // this.logger.append('carregando lista de eleitores...');
     const results: Observable<any> = this.electionService.getBallots(this.shortName);
     results.subscribe((res: any) => {
       const listBallots: any = [];
-      this.result_append('lista de eleitores carregada, agora carregando a cédula de cada um..');
+      // this.logger.append('lista de eleitores carregada, agora carregando a cédula de cada um..');
 
       res.message.forEach((ballot: any) => {
-        const getBallot: Observable<any> = this.electionService.getLastBallot(this.shortName, ballot.voter_uuid);
-        listBallots[listBallots.length] = getBallot;
-      });
-
-      forkJoin(listBallots).subscribe((lastBallots: any) => {
-        this.result_append('Cédulas:');
-        lastBallots.forEach((castVote: any) => {
+        this.electionService.getLastBallot(this.shortName, ballot.voter_uuid).subscribe(castVote => {
           this.doVerify(castVote.message);
         });
       });
-
     });
   }
 
@@ -172,18 +165,17 @@ export class VerifierComponent implements OnInit {
 
     const vote: any = EncryptedVote.fromJSONObject(castVote.vote, this.election);
     const voteTohash: any = EncryptedVote.fromJSONObject(castVote.vote, this.election); /* FIX ME */
-    this.result_append('Eleitor #' + this.count++);
-    this.result_append('-- UUID: ' + castVote.voter_uuid);
-    this.result_append('-- Número de Rastreamento da Cédula: ' + this.getHash(voteTohash));
+    this.logger.append(this.getHash(voteTohash));
     vote.verifyProof(this.election.public_key,
       (answerNum: any, choiceNum: any, result: any, choice: any) => {
         this.overallResult = this.overallResult && result;
         if (choiceNum != null) {
           // keep track of tally
           this.tally[answerNum][choiceNum] = choice.multiply(this.tally[answerNum][choiceNum]);
-          this.result_append('Questão #' + (answerNum + 1) + ', Opção #' + (choiceNum + 1) + ' -- ' + result);
+          this.logger.postResult(this.getHash(voteTohash), result, choiceNum + 1);
+          // this.logger.append('Questão #' + (answerNum + 1) + ', Opção #' + (choiceNum + 1) + ' -- ' + result);
       } else {
-          this.result_append('Questão #' + (answerNum + 1) + ' GLOBAL -- ' + result);
+          // this.logger.append('Questão #' + (answerNum + 1) + ' GLOBAL -- ' + result);
       }
     });
   }
