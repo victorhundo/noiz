@@ -1,1 +1,107 @@
-<p>edit works!</p>
+<div *ngIf="!isReady" class="loading">
+        <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="isReady" class="login-box">
+        <mat-card style="text-align:center;">
+            <mat-card-title >Editar {{election.name}}</mat-card-title>
+        </mat-card>
+        <mat-accordion>
+            <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                      <mat-panel-title> Eleição </mat-panel-title>
+                      <mat-panel-description> Editar nome, descrição e data </mat-panel-description>
+                      
+                  </mat-expansion-panel-header>
+                  <form [formGroup]="electionFormGroup" >
+                        <ng-template matStepLabel>Criar Eleição</ng-template>
+                        <mat-form-field class="myGroupForm" hintLabel="Máximo 10 caracteres. Caracteres especiais não permitido">
+                          <input matInput placeholder="Nome abreviado" formControlName="shortName" style="text-transform:lowercase" required>
+                        </mat-form-field> 
+                        <mat-form-field class="myGroupForm">
+                          <input matInput placeholder="Nome" formControlName="name" required>
+                        </mat-form-field>
+                        <mat-form-field class="myGroupForm">
+                          <textarea matInput placeholder="Descrição" formControlName="description" required></textarea>
+                        </mat-form-field>
+                        <mat-form-field class="myGroupForm">
+                          <input matInput placeholder="Endereço de Email para Ajuda" formControlName="helpEmail" required>
+                        </mat-form-field>
+                        <mat-form-field class="myGroupForm">
+                          <mat-placeholder>Votação começa em</mat-placeholder>
+                          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+                          <mat-datetimepicker #datetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+                          <input matInput formControlName="votingStartsAt" [matDatetimepicker]="datetimePicker" required autocomplete="false">
+                        </mat-form-field>
+                        <mat-form-field class="myGroupForm">
+                          <mat-placeholder>Votação termina em</mat-placeholder>
+                          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+                          <mat-datetimepicker #datetimePicker2 type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+                          <input matInput formControlName="votingEndsAt" [matDatetimepicker]="datetimePicker2" required autocomplete="false">
+                        </mat-form-field>
+                        <div style="text-align: center">
+                                <button mat-raised-button 
+                                    color="warn" 
+                                    type="submit" 
+                                    (click)="updateElection()" 
+                                    [disabled]="!electionFormGroup.valid">
+                                    Atualizar
+                                </button>
+                        </div>
+                    </form>
+            </mat-expansion-panel>
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title> Questões </mat-panel-title>
+                    <mat-panel-description> Editar título da pergunta, adicionar/remover respostas </mat-panel-description>
+                </mat-expansion-panel-header>
+                <form [formGroup]="questionFormGroup">
+                        <ng-template matStepLabel>Adicionar Questões</ng-template>
+                        <mat-form-field class="myGroupForm">
+                          <input matInput placeholder="Pergunta" formControlName="question" required>
+                        </mat-form-field>
+                        <div formArrayName="answers">
+                          <div *ngFor="let answer of answersForm.controls; let i=index" [formGroupName]=i>
+                            <mat-form-field class="myGroupFormAnswer">
+                              <input matInput placeholder="Resposta {{i + 1}}" formControlName="answer">
+                            </mat-form-field>
+                            <button mat-mini-fab (click)="deleteAnswer(i)" *ngIf="minAnswer()">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                        <div formArrayName="answer_urls">
+                        <div *ngFor="let answer_urls of answersUrlForm.controls; let j=index" [formGroupName]=j>
+                          <mat-form-field class="myGroupFormAnswer">
+                            <input matInput placeholder="Link para mais informações sobre Resposta {{j + 1}}" formControlName="answer_urls">
+                          </mat-form-field>
+                        </div>
+                        </div>
+                        <button mat-raised-button color="primary" (click)="addAnswer()">Adicionar Resposta</button>
+                        <div style="text-align: center">
+                                <button mat-raised-button 
+                                    color="warn" 
+                                    type="submit" 
+                                    (click)="updateQuestion()" 
+                                    [disabled]="!questionFormGroup.valid">
+                                    Atualizar
+                                </button>
+                        </div>
+                      </form>
+            </mat-expansion-panel>
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Apuradores </mat-panel-title>
+                        <mat-panel-description> Sistema Helios ou Pessoas serão os Apuradores? </mat-panel-description>
+                    </mat-expansion-panel-header>
+                      <p>Sistema Noiz ainda não dá suporte para esse tipo de atualização</p>
+            </mat-expansion-panel>
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Eleitores </mat-panel-title>
+                        <mat-panel-description> Eleição aberta ou reservada? </mat-panel-description>
+                    </mat-expansion-panel-header>
+                      <p>Sistema Noiz ainda não dá suporte para esse tipo de atualização</p>
+            </mat-expansion-panel>
+        </mat-accordion>
+              
+</div>

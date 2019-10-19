@@ -16,11 +16,11 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'elections', component: ElectionComponent },
-  { path: 'elections/:id/edit', component: EditElectionComponent },
+  { path: 'elections/:short_name/edit', component: EditElectionComponent },
   { path: 'booth/:short_name', component: BoothComponent },
   { path: 'users', component: UserComponent },
   { path: 'users/new', component: NewUserComponent },
-  { path: 'verifier/:short_name', component: VerifierComponent },
+  { path: 'elections/:short_name/verify', component: VerifierComponent },
 ];
 
 @NgModule({

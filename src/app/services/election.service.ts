@@ -28,6 +28,10 @@ export class ElectionService {
     return this.http.post(`${API}/elections/`, data);
   }
 
+  updateElection(id, data): Observable<any>{
+    return this.http.put(`${API}/elections/${id}/`, data);
+  }
+
   freezeElection(id, data): Observable<any> {
     return this.http.post(`${API}/elections/${id}/freeze/`,data)
   }
