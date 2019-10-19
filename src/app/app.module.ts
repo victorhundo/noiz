@@ -33,7 +33,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
-import { EletctionComponent } from './components/eletction/eletction.component';
+import { ElectionComponent } from './components/election/election.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { BoothComponent } from './components/booth/booth.component';
@@ -44,6 +44,7 @@ import { MatDatepickerModule } from '@angular/material';
 import { MatMomentDatetimeModule } from '@mat-datetimepicker/moment';
 import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 import { VerifierComponent } from './components/verifier/verifier.component';
+import { EditElectionComponent } from './components/election/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -51,14 +52,15 @@ import { VerifierComponent } from './components/verifier/verifier.component';
     LoginComponent,
     SidenavComponent,
     HomeComponent,
-    EletctionComponent,
+    ElectionComponent,
     ToolbarComponent,
     MenuComponent,
     BoothComponent,
     UserComponent,
     NewUserComponent,
     ErrorDialogComponent,
-    VerifierComponent
+    VerifierComponent,
+    EditElectionComponent
   ],
   imports: [
     BrowserModule,

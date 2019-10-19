@@ -8,11 +8,11 @@ import { of } from 'rxjs';
 import { MatStepper } from '@angular/material';
 
 @Component({
-  selector: 'app-eletction',
-  templateUrl: './eletction.component.html',
-  styleUrls: ['./eletction.component.scss']
+  selector: 'app-election',
+  templateUrl: './election.component.html',
+  styleUrls: ['./election.component.scss']
 })
-export class EletctionComponent implements OnInit {
+export class ElectionComponent implements OnInit {
   isLinear = false;
   electionFormGroup: FormGroup;
   questionFormGroup: FormGroup;
