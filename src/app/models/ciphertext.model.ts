@@ -97,7 +97,7 @@ export class Ciphertext {
     // set the real proof
     proofs[real_index] = real_proof;
     var val: any = new DisjunctiveProof(proofs);
-    return val.proofs;
+    return val;
   }
 
   verifyDisjunctiveProof(listOfPlaintexts: any, disjProof: any, challengeGenerator: any) {

@@ -13,50 +13,45 @@ export class LoggerService {
     return this.logger;
   }
 
-  reset(){
+  len() {
+    return this.logger.length;
+  }
+
+  reset() {
     this.logger = [];
   }
 
-  setColumns(nAnswers: number) {
-    this.columns = ["Cédula"]
-    for (let index = 0; index < nAnswers; index++) {
-      this.columns.push(`Opção #${index + 1}`); 
+  setColumns(answers: any) {
+    this.columns = ['Cédula'] ;
+    if (answers) {
+      answers.forEach((e: any) => {
+        this.columns.push(e.answer);
+      });
     }
     return this.columns;
   }
 
   append(s: string) {
-    let temp: any = [...this.logger];
+    const temp: any = [...this.logger];
     temp.push({
       hash: s,
-      answers: new Array<boolean>(this.columns.lenght)
+      answers: new Array<boolean>(this.columns.length - 1)
     });
-    this.reset()
-    this.logger = temp;
-    return this.logger;
-  }
-
-  postResult(hash:string, value:boolean, answer:number){
-    let temp: any = [...this.logger];
-    let obj: any;
-    let indexSave: number;
-    for (let index = 0; index < temp.lenght; index++) {
-      this.columns.push(`Opção #${index + 1}`); 
-      if (temp[index].hash === hash){
-        obj = temp[index];
-        indexSave = index;
-        break;
-      }
-    }
-
-    obj.answers[answer] = value;
-    temp[indexSave] = obj;
     this.reset();
     this.logger = temp;
     return this.logger;
   }
 
+  postResult(hash: string, value: boolean, answer: number) {
+    const temp: any = [...this.logger];
+    const index: any = temp.findIndex((x: any) => x.hash === hash);
+    const obj: any = temp[index];
 
+    obj.answers[answer] = value;
+    temp[index] = obj;
+    this.reset();
+    this.logger = temp;
+    return this.logger;
   }
 
 }

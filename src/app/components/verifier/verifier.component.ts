@@ -24,6 +24,7 @@ export class VerifierComponent implements OnInit {
   overallResult = true;
   tally: any = [];
   nAnswers = 0;
+  showTable = false;
 
   constructor(
     private electionService: ElectionService,
@@ -33,7 +34,7 @@ export class VerifierComponent implements OnInit {
 
   ngOnInit() {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
-    this.getElection();   
+    this.getElection();
   }
 
   private dateTimeFormat(a: string) {
@@ -121,17 +122,16 @@ export class VerifierComponent implements OnInit {
        this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
        this.election.election_hash = this.election.hash;
        this.election.public_key = this.keyBigInt(this.pk);
-       this.logger.append('eleição carregada: ' + this.election.name);
-       this.logger.append('código de identificação da eleição: ' + this.election.election_hash);
-       console.log(this.election);
-       this.nAnswers = this.election.questions[0].answers.length;
+      //  this.logger.append('eleição carregada: ' + this.election.name);
+      //  this.logger.append('código de identificação da eleição: ' + this.election.election_hash);
+       this.nAnswers = this.election.questions[0].answers;
     });
   }
 
   verify() {
+    this.showTable = true;
     this.logger.reset();
     this.count = 0;
-
 
     this.questions.forEach((q: any, index: number) => {
       if ( !(q.tally_type === 'homomorphic' )) {
@@ -165,14 +165,15 @@ export class VerifierComponent implements OnInit {
 
     const vote: any = EncryptedVote.fromJSONObject(castVote.vote, this.election);
     const voteTohash: any = EncryptedVote.fromJSONObject(castVote.vote, this.election); /* FIX ME */
-    this.logger.append(this.getHash(voteTohash));
+    const voteHash = this.getHash(voteTohash);
+    this.logger.append(voteHash);
     vote.verifyProof(this.election.public_key,
       (answerNum: any, choiceNum: any, result: any, choice: any) => {
         this.overallResult = this.overallResult && result;
         if (choiceNum != null) {
           // keep track of tally
           this.tally[answerNum][choiceNum] = choice.multiply(this.tally[answerNum][choiceNum]);
-          this.logger.postResult(this.getHash(voteTohash), result, choiceNum + 1);
+          this.logger.postResult(voteHash, result, choiceNum);
           // this.logger.append('Questão #' + (answerNum + 1) + ', Opção #' + (choiceNum + 1) + ' -- ' + result);
       } else {
           // this.logger.append('Questão #' + (answerNum + 1) + ' GLOBAL -- ' + result);
