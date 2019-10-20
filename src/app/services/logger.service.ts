@@ -25,7 +25,7 @@ export class LoggerService {
     this.columns = ['Cédula'] ;
     if (answers) {
       answers.forEach((e: any) => {
-        this.columns.push(e.answer);
+        this.columns.push(e);
       });
     }
     return this.columns;

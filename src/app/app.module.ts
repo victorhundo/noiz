@@ -45,6 +45,7 @@ import { MatMomentDatetimeModule } from '@mat-datetimepicker/moment';
 import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 import { VerifierComponent } from './components/verifier/verifier.component';
 import { EditElectionComponent } from './components/election/edit/edit.component';
+import { DetailElectionComponent } from './components/election/detail/detail.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { EditElectionComponent } from './components/election/edit/edit.component
     NewUserComponent,
     ErrorDialogComponent,
     VerifierComponent,
-    EditElectionComponent
+    EditElectionComponent,
+    DetailElectionComponent
   ],
   imports: [
     BrowserModule,

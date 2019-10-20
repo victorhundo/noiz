@@ -32,6 +32,15 @@ export class EditElectionComponent implements OnInit {
     this.getElection();
   }
 
+  getElection() {
+    const results: Observable<any> = this.electionService.getElection(this.shortName);
+    results.subscribe( res => {
+       this.election = res;
+       this.questions = this.election.questions;
+       this.buildForms();
+    });
+  }
+
   buildForms() {
     this.electionFormGroup = this.formBuilder.group({
       shortName: [this.election.short_name, Validators.compose([ Validators.required, Validators.pattern('^[a-zA-Z0-9_]*$')])],
@@ -56,6 +65,7 @@ export class EditElectionComponent implements OnInit {
     });
     this.initialQuestionFormValue = Object.assign({}, this.questionFormGroup.value);
     this.initialElectionFormValue = Object.assign({}, this.electionFormGroup.value);
+    this.isReady = true;
   }
 
 
@@ -138,77 +148,6 @@ export class EditElectionComponent implements OnInit {
     }
   }
 
-  private getQuestions(c: any) {
-    const questions: any = [];
-    c.forEach(q => {
-      const answerUrls: any = [];
-      const theAnswers: any = [];
 
-      q.answer_urls.forEach(e => {
-        answerUrls.push(e);
-      });
-
-      q.answers.forEach(e => {
-        theAnswers.push(e);
-      });
-
-      questions.push( {
-        answer_urls: answerUrls,
-        answers: theAnswers,
-        choice_type: q.choice_type,
-        max: q.max,
-        min: q.min,
-        question: q.question,
-        result_type: q.result_type,
-        tally_type: q.tally_type
-      });
-    });
-    return questions;
-  }
-
-
-  toUnicode(s: string) {
-    return s.replace(/[\u007F-\uFFFF]/g, (chr) => {
-      return '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).substr(-4);
-    });
-  }
-
-  private dateTimeFormat(a: string) {
-    a = a.replace('.000000', '');
-    return a.slice(0, (a.length - 2)) + ':' + a.slice(-2);
-  }
-
-  private normalizeUnicode(a: string) {
-    a = unescapeJs(a);
-    a = a.replace(/u'/g, '\'').replace(/'/g, '"');
-    const result: any = [];
-    JSON.parse(decodeURIComponent(a)).forEach((e: any) => {
-      result.push({
-        answer_urls: e.answer_urls,
-        answers: e.answers,
-        choice_type: e.choice_type,
-        max: e.max,
-        min: e.min,
-        question: e.question,
-        result_type: e.result_type,
-        tally_type: e.tally_type
-      });
-    });
-    return result;
-  }
-
-  getElection() {
-    const results: Observable<any> = this.electionService.getElection(this.shortName);
-    results.subscribe( res => {
-       this.election = res;
-       this.election.voting_ends_at = this.dateTimeFormat(res.voting_ends_at);
-       this.election.voting_starts_at = this.dateTimeFormat(res.voting_starts_at);
-       const key = JSON.parse(res.public_key);
-       this.election.questions = this.normalizeUnicode(this.election.questions);
-       this.questions = this.getQuestions(this.election.questions);
-       this.buildForms();
-       this.isReady = true;
-    });
-  }
 
 }

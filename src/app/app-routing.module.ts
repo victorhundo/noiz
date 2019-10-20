@@ -4,6 +4,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { ElectionComponent } from './components/election/election.component';
+import { DetailElectionComponent } from './components/election/detail/detail.component';
 import { EditElectionComponent } from './components/election/edit/edit.component';
 import { BoothComponent } from './components/booth/booth.component';
 import { UserComponent } from './components/user/user.component';
@@ -16,11 +17,12 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'elections', component: ElectionComponent },
+  { path: 'elections/:short_name/detail', component: DetailElectionComponent },
   { path: 'elections/:short_name/edit', component: EditElectionComponent },
+  { path: 'elections/:short_name/verify', component: VerifierComponent },
   { path: 'booth/:short_name', component: BoothComponent },
   { path: 'users', component: UserComponent },
   { path: 'users/new', component: NewUserComponent },
-  { path: 'elections/:short_name/verify', component: VerifierComponent },
 ];
 
 @NgModule({

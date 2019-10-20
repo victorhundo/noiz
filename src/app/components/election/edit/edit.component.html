@@ -103,5 +103,7 @@
                       <p>Sistema Noiz ainda não dá suporte para esse tipo de atualização</p>
             </mat-expansion-panel>
         </mat-accordion>
-              
+        <div style="text-align: right; margin-top:20px">
+                <button mat-raised-button color="primary" [routerLink]="['/elections', shortName, 'detail']">Detalhes {{election.name}}</button>
+        </div>
 </div>

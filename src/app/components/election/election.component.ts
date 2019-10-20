@@ -157,7 +157,20 @@ export class ElectionComponent implements OnInit {
   }
 
   submit() {
-    const resultsElection: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
+    const questions = Object.assign({}, this.questionFormGroup.value);
+    const data = Object.assign({}, this.electionFormGroup.value);
+    const answers: any = [];
+    const answersUrl: any = [];
+    questions.answers.forEach((e: any) => {
+      answers.push(e.answer);
+    });
+    questions.answer_urls.forEach((e: any) => {
+      answersUrl.push(e.answer_urls);
+    });
+    questions.answers = answers;
+    questions.answer_urls = answersUrl;
+    data.questions = [questions];
+    const resultsElection: Observable<any> = this.electionService.createElection(data);
     resultsElection.subscribe( res => {
       const trusteeRequest: Observable<any> = this.trusteeRequest(res.message.uuid, this.trusteeFormGroup.get('trustee').value);
       const voterRequest: Observable<any> = this.voterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
