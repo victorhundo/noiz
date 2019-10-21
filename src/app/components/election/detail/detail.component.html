@@ -1,1 +1,84 @@
-<p>detail works!</p>
+<div *ngIf="!isReady" class="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="isReady">
+    <div style="width: 100%; text-align:center">
+        <h1 style="margin-bottom: 0px">{{election.name}}</h1>
+        <p style="margin-top: 0px;">Código de Identificação: {{election.hash}}</p>
+    </div>
+    <div style="text-align: center; margin-bottom: 10px;">
+        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" style="border-color: transparent">
+            <mat-button-toggle (click)="submit()" [routerLink]="['/booth', election.short_name]" style="background: #ce1628">
+                <mat-icon>how_to_vote</mat-icon>
+                <span>Votar</span>
+            </mat-button-toggle>
+            <mat-button-toggle (click)="submit()" [routerLink]="['/elections', election.short_name, 'verify']" style="background: #ce1628">
+                <mat-icon>check</mat-icon>
+                <span>Auditar</span>
+            </mat-button-toggle>
+            <mat-button-toggle [matMenuTriggerFor]="menu" style="background: #ce1628">
+                <mat-icon>more_horiz</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>     
+    
+    <div class="main-div">
+        <mat-card>
+                <mat-card-title>Descrição</mat-card-title>
+                <mat-card-content class="description-content">
+                    {{election.description}}
+                </mat-card-content>
+        </mat-card>
+        <mat-card>
+                <mat-card-title>Pergunta</mat-card-title>
+                <mat-card-content class="description-content">
+                    {{election.questions[0].question}}
+                </mat-card-content>
+        </mat-card>
+        <mat-card>
+                <mat-card-title>Opções</mat-card-title>
+                <mat-card-content class="description-content">
+                    <mat-nav-list>
+                        <div *ngFor="let a of election.questions[0].answers; let i = index">
+                            <a matLine href="{{election.questions[0].answer_urls[i]}}" target="_blank">
+                            <mat-list-item>
+                                <h2 matLine> {{a}} </h2>
+                                <mat-icon matListIcon>launch</mat-icon>
+                            </mat-list-item>
+                            </a>
+                        </div>
+                    </mat-nav-list>
+                </mat-card-content>
+        </mat-card>
+        <mat-card>
+                <mat-card-title>Cronograma</mat-card-title>
+                <mat-card-content class="description-content">
+                    <!-- <p>Início da eleição: {{ getTime(election.voting_starts _at) }}</p> -->
+                    <p>Início da eleição: {{ getTime(election.voting_starts_at) }}</p> 
+                    <p>Término da eleição: {{ getTime(election.voting_ends_at) }}</p> 
+                </mat-card-content>
+        </mat-card>
+    </div>
+
+
+
+
+<mat-menu #menu="matMenu" >
+        <button mat-menu-item (click)="freeze()" *ngIf="hasAdmin() && isNotFreeze()">
+          <mat-icon>ac_unit</mat-icon>
+          <span>Congelar</span>
+        </button>
+        <button mat-menu-item *ngIf="canCompute()" (click)="compute_tally()">
+          <mat-icon aria-hidden="false">done_all</mat-icon>
+          <span>Computar Votos</span>
+        </button>
+        <button mat-menu-item *ngIf="hasAdmin()">
+          <mat-icon aria-hidden="false">archive</mat-icon>
+          <span>Arquivar</span>
+        </button>
+        <button mat-menu-item *ngIf="hasAdmin()" (click)="navigateMenu('edit')">
+          <mat-icon aria-hidden="false">edit</mat-icon>
+          <span>Editar</span>
+        </button> 
+    </mat-menu>
+</div>   

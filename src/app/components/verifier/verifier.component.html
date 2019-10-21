@@ -36,6 +36,6 @@
             <tr mat-footer-row *matFooterRowDef="logger.setColumns(nAnswers)"></tr>
         </table>
         <div style="text-align: right; margin-top:20px">
-                <button mat-raised-button color="primary" [routerLink]="['/elections', shortName]">Detalhes {{election.name}}</button>              
+                <button mat-raised-button color="primary" [routerLink]="['/elections', shortName, 'detail']">Detalhes {{election.name}}</button>              
         </div>
 </div>

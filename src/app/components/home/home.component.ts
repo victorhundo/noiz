@@ -19,6 +19,23 @@ export class HomeComponent implements OnInit {
   elections: any;
   isReady = false;
   mainElection: any = {name: '', description: '' };
+  electionsEnded: any;
+  electionsReady: any;
+  electionsStarted: any;
+  electionsFiltered: any = [
+    {
+      name: 'Encerrada',
+      election: this.electionsEnded
+    },
+    {
+      name: 'Pronta',
+      election: this.electionsReady
+    },
+    {
+      name: 'Ativa',
+      election: this.electionsStarted
+    }
+  ];
 
   constructor(
     private router: Router,
@@ -39,6 +56,8 @@ export class HomeComponent implements OnInit {
       this.user = this.authService.getUser();
     }
 
+  
+
   authHandling(res: any) {
     if (!res.message.hasLogged) {
       localStorage.clear();
@@ -46,12 +65,37 @@ export class HomeComponent implements OnInit {
    }
   }
 
+  updateFilter() {
+    this.electionsFiltered[0].election = this.elections.filter(this.isEnd);
+    this.electionsFiltered[1].election = this.elections.filter(this.isElectionReady);
+    this.electionsFiltered[2].election = this.elections.filter(this.isElectionStated);
+  }
+
+  needAdmin(f: any) {
+    if (f.name === 'Pronta') {
+      return this.hasAdmin();
+    }
+    return true;
+  }
+
   electionHandling(res: any) {
     this.elections = res;
+    this.updateFilter();
     if (res.length > 0) {
       this.mainElection = res[0];
     }
     this.isReady = true;
+  }
+
+  isElectionReady(e: any) {
+    return e.frozen_at === null;
+  }
+
+  isElectionStated(e: any) {
+    const endTime: Date = new Date(Date.parse(e.voting_ends_at));
+    const isReady = e.frozen_at === null;
+    const isEnded = endTime.getTime() < Date.now();
+    return !isReady && !isEnded;
   }
 
   hasAdmin() {
@@ -77,6 +121,11 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  getTime(dateString: string){
+    const date: Date = new Date(Date.parse(dateString));
+    return date.toLocaleString('pt-br').split('.')[0];
+  }
+
   freeze() {
     const results: Observable<any> = this.electionService.freezeElection(this.mainElection.uuid, 'freeze');
     results.subscribe( res => {
@@ -91,6 +140,11 @@ export class HomeComponent implements OnInit {
 
   changeMainElection(e: any) {
     this.mainElection = e;
+  }
+
+  isEnd(e: any) {
+    const endTime: Date = new Date(Date.parse(e.voting_ends_at));
+    return endTime.getTime() < Date.now();
   }
 
   elecitonIsEnd(date: string) {

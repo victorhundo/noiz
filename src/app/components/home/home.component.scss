@@ -7,6 +7,22 @@
   top:0; bottom:0;
   margin:auto;
 }
+
+mat-card {
+  margin: 10px;
+  top: 0px;
+}
+
+.main-div{
+  display: flex;
+  justify-content: center;
+}
+
+
+.electionList {
+  padding: 0px;
+  width: 280px;
+}
 .example-icon {
   padding: 0 14px;
 }
