@@ -7,6 +7,7 @@ import { EncryptedVote } from 'src/app/models/encryptedVote';
 import unescapeJs from 'unescape-js';
 import { MatStepper } from '@angular/material';
 import { sortObj } from 'sort-object';
+import { Election } from 'src/app/models/election.model';
 
 declare var b64_sha256: any;
 declare var BigInt: any;
@@ -57,28 +58,12 @@ export class BoothComponent implements OnInit {
   getElection() {
     const results: Observable<any> = this.electionService.getElection(this.shortName);
     results.subscribe( res => {
-       this.election = res;
+       this.election = new Election(res);
        this.questions = this.election.questions;
-       this.pk = this.keyBigInt(this.election.public_key);
-       this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
-       this.election.election_hash = this.election.hash;
-       this.election.public_key = this.pk;
+       this.pk = this.election.publicKey;
+       this.election.generateHash();
+       console.log(this.election);
     });
-  }
-
-  toUnicode(s: string) {
-    return s.replace(/[\u007F-\uFFFF]/g, (chr) => {
-      return '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).substr(-4);
-    });
-  }
-
-  keyBigInt(s: any) {
-    return {
-      g: new BigInt(s.g),
-      p: new BigInt(s.p),
-      q: new BigInt(s.q),
-      y: new BigInt(s.y),
-    };
   }
 
   getAnswer() {

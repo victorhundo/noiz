@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { API } from 'src/app/util';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class AuthService {
     if (localStorage.getItem('noiz') == null) {
       return null;
     } else {
-      return JSON.parse(localStorage.getItem('noiz')).user;
+      return new User(JSON.parse(localStorage.getItem('noiz')).user);
     }
   }
 }

@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Election } from 'src/app/models/election.model';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,7 @@ import { catchError } from 'rxjs/operators';
 export class HomeComponent implements OnInit {
 
   user: any;
-  elections: any;
+  elections: any = [];
   isReady = false;
   mainElection: any = {name: '', description: '' };
   electionsEnded: any;
@@ -52,11 +53,9 @@ export class HomeComponent implements OnInit {
       });
     }
 
-    ngOnInit() {
-      this.user = this.authService.getUser();
-    }
-
-  
+  ngOnInit() {
+    this.user = this.authService.getUser();
+  }
 
   authHandling(res: any) {
     if (!res.message.hasLogged) {
@@ -65,10 +64,18 @@ export class HomeComponent implements OnInit {
    }
   }
 
+  electionHandling(res: any) {
+    res.forEach((e: any) => {
+      this.elections.push(new Election(e));
+    });
+    this.updateFilter();
+    this.isReady = true;
+  }
+
   updateFilter() {
-    this.electionsFiltered[0].election = this.elections.filter(this.isEnd);
-    this.electionsFiltered[1].election = this.elections.filter(this.isElectionReady);
-    this.electionsFiltered[2].election = this.elections.filter(this.isElectionStated);
+    this.electionsFiltered[0].election = this.elections.filter((e: any) => e.isEnded());
+    this.electionsFiltered[1].election = this.elections.filter((e: any) => e.isReady());
+    this.electionsFiltered[2].election = this.elections.filter((e: any) => e.isStarted());
   }
 
   needAdmin(f: any) {
@@ -78,93 +85,12 @@ export class HomeComponent implements OnInit {
     return true;
   }
 
-  electionHandling(res: any) {
-    this.elections = res;
-    this.updateFilter();
-    if (res.length > 0) {
-      this.mainElection = res[0];
-    }
-    this.isReady = true;
-  }
-
-  isElectionReady(e: any) {
-    return e.frozen_at === null;
-  }
-
-  isElectionStated(e: any) {
-    const endTime: Date = new Date(Date.parse(e.voting_ends_at));
-    const isReady = e.frozen_at === null;
-    const isEnded = endTime.getTime() < Date.now();
-    return !isReady && !isEnded;
-  }
-
   hasAdmin() {
-    return this.user.admin_p;
+    return this.user.isAdmin();
   }
 
   hasElection() {
     return this.elections.length > 0;
-  }
-
-  arrayOne(n: number): any[] {
-    return Array(n);
-  }
-
-  getElections() {
-    const results: Observable<any> = this.electionService.getElections();
-    results.subscribe( res => {
-       this.elections = res;
-       if (res.length > 0) {
-         this.mainElection = res[0];
-       }
-       console.log(this.mainElection);
-    });
-  }
-
-  getTime(dateString: string){
-    const date: Date = new Date(Date.parse(dateString));
-    return date.toLocaleString('pt-br').split('.')[0];
-  }
-
-  freeze() {
-    const results: Observable<any> = this.electionService.freezeElection(this.mainElection.uuid, 'freeze');
-    results.subscribe( res => {
-       console.log(res);
-       location.reload();
-    });
-  }
-
-  isNotFreeze() {
-    return this.mainElection.frozen_at === null;
-  }
-
-  changeMainElection(e: any) {
-    this.mainElection = e;
-  }
-
-  isEnd(e: any) {
-    const endTime: Date = new Date(Date.parse(e.voting_ends_at));
-    return endTime.getTime() < Date.now();
-  }
-
-  elecitonIsEnd(date: string) {
-    const endTime: Date = new Date(Date.parse(date));
-    if (endTime.getTime() < Date.now()) {
-      return 'Encerrada.';
-    } else {
-      return 'Encerramento: '  + endTime.toLocaleString('pt-br').split('.')[0];
-    }
-  }
-
-  canCompute() {
-    return !this.isNotFreeze() && this.hasAdmin();
-  }
-
-  compute_tally() {
-    const results: Observable<any> = this.electionService.computeTally(this.mainElection.uuid);
-    results.subscribe( res => {
-        location.reload();
-    });
   }
 
 }

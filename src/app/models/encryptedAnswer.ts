@@ -34,7 +34,7 @@ export class EncryptedAnswer {
         var ea = new EncryptedAnswer(null,null,null);
 
         ea.choices = encrypted_answer.choices.map((choice:any) => {
-          return Ciphertext.fromJSONObject(choice, election.public_key);
+          return Ciphertext.fromJSONObject(choice, election.publicKey);
         });
         
         ea.individual_proofs = encrypted_answer.individual_proofs.map((p:any) => {

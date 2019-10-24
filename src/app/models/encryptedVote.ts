@@ -24,7 +24,7 @@ export class EncryptedVote {
 
          // loop through questions
         for (var i=0; i<n_questions; i++) {
-            this.encrypted_answers[i] = new EncryptedAnswer(election.questions[i], answers[i], election.public_key);
+            this.encrypted_answers[i] = new EncryptedAnswer(election.questions[i], answers[i], election.publicKey);
         }
     }
     

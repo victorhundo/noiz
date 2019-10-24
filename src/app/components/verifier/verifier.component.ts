@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import unescapeJs from 'unescape-js';
 import { EncryptedVote } from 'src/app/models/encryptedVote';
+import { Election } from 'src/app/models/election.model';
 
 declare var b64_sha256: any;
 declare var BigInt: any;
@@ -55,13 +56,10 @@ export class VerifierComponent implements OnInit {
   getElection() {
     const results: Observable<any> = this.electionService.getElection(this.shortName);
     results.subscribe( res => {
-       this.election = res;
-       this.pk = this.keyBigInt(this.election.public_key);
+       this.election = new Election(res);
+       this.pk = this.election.publicKey;
        this.questions = this.election.questions;
-       this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
-       this.election.public_key = this.pk;
-       this.election.election_hash = this.election.hash;
-       console.log(this.election.questions[0].answers);
+       this.election.generateHash();
        this.nAnswers = this.election.questions[0].answers;
     });
   }
@@ -105,7 +103,7 @@ export class VerifierComponent implements OnInit {
     const voteTohash: any = EncryptedVote.fromJSONObject(castVote.vote, this.election); /* FIX ME */
     const voteHash = this.getHash(voteTohash);
     this.logger.append(voteHash);
-    vote.verifyProof(this.election.public_key,
+    vote.verifyProof(this.election.publicKey,
       (answerNum: any, choiceNum: any, result: any, choice: any) => {
         this.overallResult = this.overallResult && result;
         if (choiceNum != null) {

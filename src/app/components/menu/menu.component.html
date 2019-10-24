@@ -6,4 +6,12 @@
       <mat-icon matListIcon>home</mat-icon>
       <h2 matLine> Home </h2>
     </mat-list-item>
+    <mat-list-item (click)="goto('/users')">
+      <mat-icon matListIcon>person</mat-icon>
+      <h2 matLine> Eleitores </h2>
+    </mat-list-item>
+    <mat-list-item (click)="goto('/users')">
+      <mat-icon matListIcon>account_circle</mat-icon>
+      <h2 matLine> Conta </h2>
+    </mat-list-item>
 </mat-nav-list>

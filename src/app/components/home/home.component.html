@@ -19,7 +19,7 @@
               <span class="example-spacer"></span>
           </mat-toolbar>
         <mat-nav-list>
-            <mat-list-item *ngFor="let e of filtered.election" [routerLink]="['/elections', e.short_name, 'detail']">
+            <mat-list-item *ngFor="let e of filtered.election" [routerLink]="['/elections', e.shortName, 'detail']">
               <mat-icon matListIcon>how_to_vote</mat-icon>
               <h2 matLine> {{e.name}} </h2>
               <p matLine>
@@ -35,29 +35,6 @@
   <button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [matMenuTriggerFor]="menuCreate">
     <mat-icon>add</mat-icon>
   </button>
-
-  <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="freeze()" *ngIf="hasAdmin() && isNotFreeze()">
-        <mat-icon>ac_unit</mat-icon>
-        <span>Congelar</span>
-      </button>
-      <button mat-menu-item *ngIf="canCompute()" (click)="compute_tally()">
-        <mat-icon aria-hidden="false">done_all</mat-icon>
-        <span>Computar Votos</span>
-      </button>
-      <button mat-menu-item *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">archive</mat-icon>
-        <span>Arquivar</span>
-      </button>
-      <button mat-menu-item *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">edit</mat-icon>
-        <span>Editar</span>
-      </button> 
-      <button mat-menu-item>
-          <mat-icon aria-hidden="false">info</mat-icon>
-          <span>Sobre</span>
-      </button>
-  </mat-menu>
 
   <mat-menu #menuCreate="matMenu">
     <button mat-menu-item [routerLink]="['/elections']">
