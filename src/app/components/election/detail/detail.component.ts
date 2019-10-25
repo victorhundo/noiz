@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Election } from 'src/app/models/election.model';
 import { Util } from 'src/app/models/util';
+import { type } from 'os';
 
 declare var b64_sha256: any;
 
@@ -44,7 +45,7 @@ export class DetailElectionComponent implements OnInit {
   }
 
   canCompute() {
-    return this.election.isFreeze() && this.user.isAdmin() && this.election.isStarted();
+    return this.election.isFreeze() && this.user.isAdmin() && this.election.isStarted() && !this.election.tallyingStartedAt;
   }
 
   canFreeze() {
@@ -115,7 +116,9 @@ export class DetailElectionComponent implements OnInit {
 
   getTimer() {
     const endTime: Date = new Date(Date.parse(this.election.votingEndsAt));
-    if ( this.timeOut() ) { this.timer = 'ENCERRADA'; return 'ENCERRADA'; }
+    if ( this.election.tallyingStartedAt ) {
+      this.timer = 'COMPUTANDO VOTOS...'; return 'COMPUTANDO VOTOS...';
+    } else if ( this.timeOut() ) { this.timer = 'ENCERRADA'; return 'ENCERRADA'; }
     const distance: any = endTime.getTime() - new Date().getTime();
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

@@ -19,6 +19,8 @@ export class Election {
     hash: any;
     publicKeyS: any;
     helpEmail: any;
+    tallyingStartedAt: any;
+    tallyingFinishedAt: any;
     result: any;
 
     constructor(response: any) {
@@ -38,6 +40,8 @@ export class Election {
         this.votingStartsAt = response.voting_starts_at;
         this.helpEmail = response.help_email;
         this.result = response.result;
+        this.tallyingStartedAt = response.tallying_started_at;
+        this.tallyingFinishedAt = response.tallying_finished_at;
     }
 
     private getObjectToHash() {
