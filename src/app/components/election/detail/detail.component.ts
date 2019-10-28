@@ -1,13 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, interval } from 'rxjs';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Observable, interval, forkJoin } from 'rxjs';
 import { ElectionService } from 'src/app/services/election.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Election } from 'src/app/models/election.model';
 import { Util } from 'src/app/models/util';
-import { type } from 'os';
+import { SuccessdialogService } from 'src/app/services/successdialog.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
 
 declare var b64_sha256: any;
+
+@Component({
+  selector: './app-dialog-confirm',
+  templateUrl: './dialog-confirm.html',
+  styleUrls: ['./detail.component.scss']
+})
+export class DialogConfirmComponent {
+  title: string;
+  subtitle: string;
+  action: string;
+  paragraphs: any = [];
+  constructor(
+    public dialogRef: MatDialogRef<DialogConfirmComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    if (data === 'freeze') {
+      this.title = 'Congelar Eleição?';
+      this.subtitle = 'Ao congelar a eleição você terá as seguintes consequências:';
+      this.action = 'Congelar';
+      this.paragraphs.push('- Não será mais permitido editar a eleição');
+      this.paragraphs.push('- Caso seja uma eleição fechada, os eleitores serão notificados');
+      this.paragraphs.push('- A eleição terá inicio');
+    }
+    if (data === 'compute') {
+      this.title = 'Computar Votos?';
+      this.subtitle = 'Ao computar os votos você terá as seguintes consequências:';
+      this.action = 'Computar';
+      this.paragraphs.push('- Não será mais permitido votar nessa eleição');
+      this.paragraphs.push('- O tempo de computação pode levar horas depedendo da quantidade de votos cifrados depositado');
+      this.paragraphs.push('- Após a computação a eleição será encerrada');
+    }
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
 
 @Component({
   selector: 'app-detail-election',
@@ -26,13 +65,19 @@ export class DetailElectionComponent implements OnInit {
     private electionService: ElectionService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private sucessDialog: SuccessdialogService,
+    public dialog: MatDialog) { }
 
   ngOnInit() {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
     this.user = this.authService.getUser();
     this.getElection();
     setInterval(() => { this.getTimer(); }, 100);
+  }
+
+  success(message: string) {
+    this.sucessDialog.open(message, 'Fechar');
   }
 
   getElection() {
@@ -42,6 +87,25 @@ export class DetailElectionComponent implements OnInit {
       this.election.generateHash();
       this.isReady = true;
     });
+  }
+
+  openDialogConfirm(action: string) {
+    const dialogRef = this.dialog.open(DialogConfirmComponent, {
+      width: '600px',
+      data: action
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if ( result === 'freeze') {
+        this.freeze();
+      } else if ( result === 'compute') {
+        this.computeTally();
+      }
+    });
+  }
+
+  canVoters() {
+    return !this.election.isOpen() || this.election.isEnded();
   }
 
   canCompute() {
@@ -69,16 +133,28 @@ export class DetailElectionComponent implements OnInit {
   }
 
   freeze() {
-    const results: Observable<any> = this.electionService.freezeElection(this.election.uuid, 'freeze');
-    results.subscribe( res => {
-       location.reload();
-    });
+    if (this.election.openreg) {
+      this.electionService.freezeElection(this.election.uuid).subscribe((res: any) => {
+        this.success('Eleição Iniciada!');
+        this.ngOnInit();
+      });
+    } else {
+      const freezeElection: Observable<any> = this.electionService.freezeElection(this.election.uuid);
+      const registryVoters: Observable<any> = this.electionService.registryVoters(this.election.uuid);
+      registryVoters.subscribe( (resRegisty: any) => {
+        freezeElection.subscribe( (resFreeze: any) => {
+          this.success('Eleição Iniciada!');
+          this.ngOnInit();
+        });
+      });
+    }
   }
 
   computeTally() {
     const results: Observable<any> = this.electionService.computeTally(this.election.uuid);
     results.subscribe( res => {
-        location.reload();
+      this.success('Apuração Iniciada!');
+      this.ngOnInit();
     });
   }
 
@@ -136,3 +212,4 @@ export class DetailElectionComponent implements OnInit {
   }
 
 }
+

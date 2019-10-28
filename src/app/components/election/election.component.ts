@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl, ControlContainer} from '@angular/forms';
 import { ElectionService } from 'src/app/services/election.service';
+import { SuccessdialogService } from 'src/app/services/successdialog.service'
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -27,7 +28,8 @@ export class ElectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private electionService: ElectionService,
     private router: Router,
-    private cd: ChangeDetectorRef) { }
+    private cd: ChangeDetectorRef,
+    private sucessDialog: SuccessdialogService) { }
 
   ngOnInit() {
     this.uploadFileForm = new FormGroup({
@@ -68,6 +70,10 @@ export class ElectionComponent implements OnInit {
       voter: ['open', Validators.required],
       theFile: [null, Validators.required]
     });
+  }
+
+  success(message) {
+    this.sucessDialog.open(message);
   }
 
   goForward(stepper: MatStepper, isDisable?: boolean) {
@@ -176,6 +182,7 @@ export class ElectionComponent implements OnInit {
       const voterRequest: Observable<any> = this.voterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       const createVoters: Observable<any> = this.createVoterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       forkJoin(trusteeRequest, voterRequest, createVoters).subscribe(results => {
+        this.success('Eleição Cadastrada com Sucesso!');
         this.router.navigate(['']);
       });
     });

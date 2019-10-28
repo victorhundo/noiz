@@ -20,11 +20,11 @@
                     <mat-icon>check</mat-icon>
                     <span>Auditar</span>
                 </mat-button-toggle>
-                <mat-button-toggle *ngIf="canFreeze()" (click)="freeze()" style="background: #ce1628">
+                <mat-button-toggle *ngIf="canFreeze()" (click)="openDialogConfirm('freeze')" style="background: #ce1628">
                     <mat-icon>ac_unit</mat-icon>
                     <span>Congelar</span>
                 </mat-button-toggle>
-                <mat-button-toggle *ngIf="canCompute()" (click)="computeTally()" style="background: #ce1628">
+                <mat-button-toggle *ngIf="canCompute()" (click)="openDialogConfirm('compute')" style="background: #ce1628">
                     <mat-icon>fingerprint</mat-icon>
                     <span>Computar Votos</span>
                 </mat-button-toggle>
@@ -33,7 +33,7 @@
                     <mat-icon aria-hidden="false">edit</mat-icon>
                     <span>Editar</span>
                 </mat-button-toggle>
-                <mat-button-toggle [routerLink]="['/elections', election.shortName, 'edit']"
+                <mat-button-toggle *ngIf="canVoters()" [routerLink]="['/elections', election.shortName, 'edit']"
                     style="background: #ce1628">
                     <mat-icon aria-hidden="false">person</mat-icon>
                     <span>Eleitores</span>

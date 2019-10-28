@@ -4,10 +4,9 @@ import { ElectionService } from 'src/app/services/election.service';
 import {FormBuilder, FormGroup, Validators, FormArray, SelectMultipleControlValueAccessor} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EncryptedVote } from 'src/app/models/encryptedVote';
-import unescapeJs from 'unescape-js';
 import { MatStepper } from '@angular/material';
-import { sortObj } from 'sort-object';
 import { Election } from 'src/app/models/election.model';
+import { SuccessdialogService } from 'src/app/services/successdialog.service';
 
 declare var b64_sha256: any;
 declare var BigInt: any;
@@ -33,7 +32,8 @@ export class BoothComponent implements OnInit {
     private formBuilder: FormBuilder,
     private electionService: ElectionService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private successDialog: SuccessdialogService
     ) { }
 
   ngOnInit() {
@@ -45,6 +45,10 @@ export class BoothComponent implements OnInit {
     this.secondFormGroup = this.formBuilder.group({
       secondCtrl: ['', Validators.required]
     });
+  }
+
+  success(message: string) {
+    this.successDialog.open(message, 'Fechar');
   }
 
   goForward(stepper: MatStepper, isDisable?: boolean) {
@@ -73,6 +77,7 @@ export class BoothComponent implements OnInit {
   submit() {
     const results: Observable<any> = this.electionService.voteElection(this.election.uuid, this.encryptedBooth);
     results.subscribe( res => {
+        this.success('Voto Depositado com Sucesso!');
         if (res.status === 200) { this.router.navigate(['']); }
     });
   }

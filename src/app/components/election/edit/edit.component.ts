@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import unescapeJs from 'unescape-js';
 import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { SuccessdialogService } from "src/app/services/successdialog.service";
 
 @Component({
   selector: 'app-edit-election',
@@ -25,7 +26,8 @@ export class EditElectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private electionService: ElectionService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private successDialog: SuccessdialogService) { }
 
   ngOnInit() {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
@@ -66,6 +68,10 @@ export class EditElectionComponent implements OnInit {
     this.initialQuestionFormValue = Object.assign({}, this.questionFormGroup.value);
     this.initialElectionFormValue = Object.assign({}, this.electionFormGroup.value);
     this.isReady = true;
+  }
+
+  success(message: string) {
+    this.successDialog.open(message);
   }
 
 
@@ -123,7 +129,7 @@ export class EditElectionComponent implements OnInit {
     });
 
     forkJoin(updateRequests).subscribe(results => {
-      console.log(results);
+      this.success('Eleição Atualizada!');
     });
   }
 
@@ -143,7 +149,7 @@ export class EditElectionComponent implements OnInit {
       questions.answer_urls = answersUrl;
       const data = { field: 'questions', value: [questions] };
       this.electionService.updateElection(this.election.uuid, data).subscribe((res: any) => {
-        console.log(res);
+        this.success('Questões Atualizadas!');
       });
     }
   }

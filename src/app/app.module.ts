@@ -23,6 +23,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatListModule} from '@angular/material/list';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 
@@ -48,6 +49,7 @@ import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 import { VerifierComponent } from './components/verifier/verifier.component';
 import { EditElectionComponent } from './components/election/edit/edit.component';
 import { DetailElectionComponent } from './components/election/detail/detail.component';
+import { DialogConfirmComponent } from './components/election/detail/detail.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { DetailElectionComponent } from './components/election/detail/detail.com
     ErrorDialogComponent,
     VerifierComponent,
     EditElectionComponent,
-    DetailElectionComponent
+    DetailElectionComponent,
+    DialogConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -94,7 +97,8 @@ import { DetailElectionComponent } from './components/election/detail/detail.com
     MatMomentDatetimeModule,
     MatDatetimepickerModule,
     MatExpansionModule,
-    MatListModule
+    MatListModule,
+    MatSnackBarModule
   ],
   providers: [
     {
@@ -103,7 +107,7 @@ import { DetailElectionComponent } from './components/election/detail/detail.com
       multi: true
     }
   ],
-  entryComponents: [ErrorDialogComponent],
+  entryComponents: [ErrorDialogComponent, DialogConfirmComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

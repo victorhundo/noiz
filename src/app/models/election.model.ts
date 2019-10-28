@@ -84,6 +84,10 @@ export class Election {
         return !(this.frozenAt === null);
     }
 
+    public isOpen() {
+        return this.openreg;
+    }
+
     public isReady() {
         const startTime: Date = new Date(Date.parse(this.votingStartsAt));
         const isStartTime: any =  Date.now() > startTime.getTime();
@@ -101,5 +105,6 @@ export class Election {
         const isEndTIme: any = endTime.getTime() < Date.now();
         return !(this.result === null) && isEndTIme;
     }
+
 
 }
