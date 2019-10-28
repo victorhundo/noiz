@@ -33,7 +33,7 @@
                     <mat-icon aria-hidden="false">edit</mat-icon>
                     <span>Editar</span>
                 </mat-button-toggle>
-                <mat-button-toggle *ngIf="canVoters()" [routerLink]="['/elections', election.shortName, 'edit']"
+                <mat-button-toggle *ngIf="canVoters()" [routerLink]="['/elections', election.shortName, 'voters']"
                     style="background: #ce1628">
                     <mat-icon aria-hidden="false">person</mat-icon>
                     <span>Eleitores</span>

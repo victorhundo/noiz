@@ -10,6 +10,7 @@ import { BoothComponent } from './components/booth/booth.component';
 import { UserComponent } from './components/user/user.component';
 import { NewUserComponent } from './components/user/new/new.component';
 import { VerifierComponent } from './components/verifier/verifier.component';
+import { VoterComponent } from './components/voter/voter.component';
 
 
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'elections', component: ElectionComponent },
   { path: 'elections/:short_name/detail', component: DetailElectionComponent },
   { path: 'elections/:short_name/edit', component: EditElectionComponent },
+  { path: 'elections/:short_name/voters', component: VoterComponent },
   { path: 'elections/:short_name/verify', component: VerifierComponent },
   { path: 'booth/:short_name', component: BoothComponent },
   { path: 'users', component: UserComponent },

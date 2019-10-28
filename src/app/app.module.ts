@@ -50,6 +50,7 @@ import { VerifierComponent } from './components/verifier/verifier.component';
 import { EditElectionComponent } from './components/election/edit/edit.component';
 import { DetailElectionComponent } from './components/election/detail/detail.component';
 import { DialogConfirmComponent } from './components/election/detail/detail.component';
+import { VoterComponent } from './components/voter/voter.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { DialogConfirmComponent } from './components/election/detail/detail.comp
     VerifierComponent,
     EditElectionComponent,
     DetailElectionComponent,
-    DialogConfirmComponent
+    DialogConfirmComponent,
+    VoterComponent
   ],
   imports: [
     BrowserModule,

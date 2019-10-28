@@ -73,7 +73,6 @@ export class DetailElectionComponent implements OnInit {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
     this.user = this.authService.getUser();
     this.getElection();
-    setInterval(() => { this.getTimer(); }, 100);
   }
 
   success(message: string) {
@@ -85,6 +84,7 @@ export class DetailElectionComponent implements OnInit {
     results.subscribe( res => {
       this.election = new Election(res);
       this.election.generateHash();
+      setInterval(() => { this.getTimer(); }, 100);
       this.isReady = true;
     });
   }

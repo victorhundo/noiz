@@ -40,6 +40,14 @@ export class ElectionService {
     return this.http.post(`${API}/elections/${id}/votersfile/registry/`, 'data');
   }
 
+  getVoters(id): Observable<any> {
+    return this.http.get(`${API}/elections/${id}/voters/`);
+  }
+
+  getVoterFile(id): Observable<any> {
+    return this.http.get(`${API}/elections/${id}/votersfile/`);
+  }
+
   addHelioTrustee(id, data): Observable<any> {
     return this.http.post(`${API}/elections/${id}/trustee/add-helios/`,data)
   }
