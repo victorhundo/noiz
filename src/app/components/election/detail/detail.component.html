@@ -1,0 +1,176 @@
+<div *ngIf="!isReady" class="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="isReady">
+    <mat-card class="submenu">
+        <div style="width: 100%; text-align:center">
+            <h1 style="margin-bottom: 0px">{{election.name}}</h1>
+            <p style="margin-top: 0px;margin-bottom: 0px">Código de Identificação: {{election.hash}}</p>
+            <p style="margin-top: 0px;">{{election.helpEmail}}</p>
+        </div>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <mat-button-toggle-group name="fontStyle" aria-label="Font Style" style="border-color: transparent">
+                <mat-button-toggle [routerLink]="['/booth', election.shortName]" *ngIf="canVote()"
+                    style="background: #ce1628">
+                    <mat-icon>how_to_vote</mat-icon>
+                    <span>Votar</span>
+                </mat-button-toggle>
+                <mat-button-toggle [routerLink]="['/elections', election.shortName, 'verify']" *ngIf="canVerify()"
+                    style="background: #ce1628">
+                    <mat-icon>check</mat-icon>
+                    <span>Auditar</span>
+                </mat-button-toggle>
+                <mat-button-toggle *ngIf="canFreeze()" (click)="openDialogConfirm('freeze')" style="background: #ce1628">
+                    <mat-icon>ac_unit</mat-icon>
+                    <span>Congelar</span>
+                </mat-button-toggle>
+                <mat-button-toggle *ngIf="canCompute()" (click)="openDialogConfirm('compute')" style="background: #ce1628">
+                    <mat-icon>fingerprint</mat-icon>
+                    <span>Computar Votos</span>
+                </mat-button-toggle>
+                <mat-button-toggle *ngIf="!election.isFreeze()" [routerLink]="['/elections', election.shortName, 'edit']"
+                    style="background: #ce1628">
+                    <mat-icon aria-hidden="false">edit</mat-icon>
+                    <span>Editar</span>
+                </mat-button-toggle>
+                <mat-button-toggle *ngIf="canVoters()" [routerLink]="['/elections', election.shortName, 'voters']"
+                    style="background: #ce1628">
+                    <mat-icon aria-hidden="false">person</mat-icon>
+                    <span>Eleitores</span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </mat-card>
+
+    <mat-grid-list cols="4" rowHeight="200px">
+        <mat-grid-tile>
+            <mat-card class="card-grid result" style="background: #71b161">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>date_range</mat-icon>
+                        <span>Cronograma</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-content class="description-content" style="text-align: center">
+                    <p style="margin-bottom: 0px"> Início</p>
+                    <h3 style="margin-top: 0px;">{{ getDate(election.votingStartsAt) }}</h3>
+                    <p style="margin-bottom: 0px"> Término</p>
+                    <h3 style="margin-top: 0px;">{{ getDate(election.votingEndsAt) }}</h3>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-card class="card-grid result" style="background: #52b7ff">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title" >
+                        <mat-icon>how_to_vote</mat-icon>
+                        <span>Tipo</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-content class="description-content result-content">
+                    <h1>{{getType()}}</h1>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1" *ngIf="canVerify()">
+            <mat-card class="card-grid result" style="background: #dac214;" >
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>emoji_events</mat-icon>
+                        <span>Opção Vencedora</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-title>Status</mat-card-title>
+                <mat-card-content class="description-content result-content">
+                    <h1 style="text-align: center;">{{getWinner()}}</h1>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile *ngIf="canVerify()">
+            <mat-card class="card-grid result" style="background: #14dac8;">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>ballot</mat-icon>
+                        <span>Total de votos</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-title>Status</mat-card-title>
+                <mat-card-content class="description-content result-content">
+                    <h1 style="text-align: center;">{{countBallot()}}</h1>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile *ngIf="election.isStarted()" [colspan]="2" [rowspan]="1">
+            <mat-card class="card-grid result" style="background: #dac214;">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>timer</mat-icon>
+                        <span>Tempo Restante</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-title>Status</mat-card-title>
+                <mat-card-content class="description-content result-content">
+                    <h1 style="text-align: center;">{{timer}}</h1>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="2">
+            <mat-card class="card-grid">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>description</mat-icon>
+                        <span>Descrição</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-content class="description-content">
+                    {{election.description}}
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="2" *ngIf="!canVerify()">
+            <mat-card class="card-grid">
+                <mat-card-title>
+                    <mat-toolbar class="card-grid-title">
+                        <mat-icon>help_outline</mat-icon>
+                        <span>Pergunta</span>
+                    </mat-toolbar>
+                </mat-card-title>
+                <mat-card-content class="description-content">
+                    <h2>{{election.questions[0].question}}</h2>
+                    <mat-nav-list>
+                        <h3>Opções:</h3>
+                        <div *ngFor="let a of election.questions[0].answers; let i = index">
+                            <a matLine href="{{election.questions[0].answer_urls[i]}}" target="_blank">
+                                <mat-list-item>
+                                    <h2 matLine> {{a}} </h2>
+                                    <mat-icon matListIcon>launch</mat-icon>
+                                </mat-list-item>
+                            </a>
+                        </div>
+                    </mat-nav-list>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="2" *ngIf="canVerify()">
+                <mat-card class="card-grid">
+                    <mat-card-title>
+                        <mat-toolbar class="card-grid-title">
+                            <mat-icon>error_outline</mat-icon>
+                            <span>Resultado</span>
+                        </mat-toolbar>
+                    </mat-card-title>
+                    <mat-card-content class="description-content">
+                        <h2>{{election.questions[0].question}}</h2>
+                        <mat-nav-list>
+                            <mat-list-item>
+                                    <p matLine href="#">Opção</p> Votos
+                            </mat-list-item>
+                            <mat-list-item *ngFor="let a of election.result[0].result; let i = index">
+                                <p matLine>{{ a.name_answer }}</p> {{a.count_vote}}
+                            </mat-list-item>
+                        </mat-nav-list>
+                    </mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+    </mat-grid-list>
+</div>

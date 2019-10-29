@@ -28,8 +28,24 @@ export class ElectionService {
     return this.http.post(`${API}/elections/`, data);
   }
 
-  freezeElection(id, data): Observable<any> {
-    return this.http.post(`${API}/elections/${id}/freeze/`,data)
+  updateElection(id, data): Observable<any>{
+    return this.http.put(`${API}/elections/${id}/`, data);
+  }
+
+  freezeElection(id): Observable<any> {
+    return this.http.post(`${API}/elections/${id}/freeze/`, 'data');
+  }
+
+  registryVoters(id): Observable<any> {
+    return this.http.post(`${API}/elections/${id}/votersfile/registry/`, 'data');
+  }
+
+  getVoters(id): Observable<any> {
+    return this.http.get(`${API}/elections/${id}/voters/`);
+  }
+
+  getVoterFile(id): Observable<any> {
+    return this.http.get(`${API}/elections/${id}/votersfile/`);
   }
 
   addHelioTrustee(id, data): Observable<any> {
@@ -37,7 +53,7 @@ export class ElectionService {
   }
 
   eligibility(id,data): Observable<any> {
-    return this.http.post(`${API}/elections/${id}/voters/eligibility/`,data)
+    return this.http.post(`${API}/elections/${id}/eligibility/`,data)
   }
 
   computeTally(id:string): Observable<any> {
@@ -48,7 +64,7 @@ export class ElectionService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('content-type', 'multipart/form-data')
     // headers = headers.append('zumo-api-version', '2.0.0');
-    return this.http.post(`${API}/elections/${id}/voters/upload`,data)
+    return this.http.post(`${API}/elections/${id}/votersfile/`,data)
   }
 
   getBallots(id: string): Observable<any> {

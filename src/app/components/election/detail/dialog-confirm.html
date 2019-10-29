@@ -1,0 +1,14 @@
+<mat-toolbar style="background: transparent;">
+        <div style="width: 100%; text-align: center">
+            <mat-icon style="margin-right: 5px">warning</mat-icon>
+            <span>{{title}}</span>
+        </div>
+</mat-toolbar>
+<h3>{{subtitle}}</h3>
+<div mat-dialog-content>
+  <p *ngFor="let p of paragraphs">{{p}}</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="onNoClick()">Cancelar</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data">{{action}}</button>
+</div>

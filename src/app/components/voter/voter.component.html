@@ -1,0 +1,41 @@
+<div *ngIf="!isReady" class="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="isReady">
+    <div style="width: 100%; text-align: center;">
+        <p>{{election.name}}  - Lista de Eleitores</p>
+    </div>
+    <table mat-table [dataSource]="voters" class="mat-elevation-z8" *ngIf="election.isFreeze()">
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef> Username </th>
+            <td mat-cell *matCellDef="let element"> {{element.voter_login_id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let element"> {{element.voter_name}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <table mat-table [dataSource]="voterFile" class="mat-elevation-z8" *ngIf="!election.isFreeze()">
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef> Username </th>
+            <td mat-cell *matCellDef="let element"> {{element.login}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+

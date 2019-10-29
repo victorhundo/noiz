@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectionService } from 'src/app/services/election.service';
+import { LoggerService } from 'src/app/services/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import unescapeJs from 'unescape-js';
 import { EncryptedVote } from 'src/app/models/encryptedVote';
+import { Election } from 'src/app/models/election.model';
 
 declare var b64_sha256: any;
 declare var BigInt: any;
@@ -19,70 +21,21 @@ export class VerifierComponent implements OnInit {
   questions: any = [];
   count = 0;
   pk: any = {};
-  results: any = [];
+  displayedColumns: any = ["log"];
   overallResult = true;
   tally: any = [];
+  nAnswers = 0;
+  showTable = false;
 
   constructor(
     private electionService: ElectionService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private logger: LoggerService) { }
 
   ngOnInit() {
     this.shortName = this.route.snapshot.paramMap.get('short_name');
     this.getElection();
-  }
-
-  private dateTimeFormat(a: string) {
-    a = a.replace('.000000', '');
-    return a.slice(0, (a.length - 2)) + ':' + a.slice(-2);
-  }
-
-  private normalizeUnicode(a: string) {
-    a = unescapeJs(a);
-    a = a.replace(/u'/g, '\'').replace(/'/g, '"');
-    const result: any = [];
-    JSON.parse(decodeURIComponent(a)).forEach((e: any) => {
-      result.push({
-        answer_urls: e.answer_urls,
-        answers: e.answers,
-        choice_type: e.choice_type,
-        max: e.max,
-        min: e.min,
-        question: e.question,
-        result_type: e.result_type,
-        tally_type: e.tally_type
-      });
-    });
-    return result;
-  }
-
-  private getQuestions(c: any) {
-    const questions: any = [];
-    c.forEach(q => {
-      const answerUrls: any = [];
-      const theAnswers: any = [];
-
-      q.answer_urls.forEach(e => {
-        answerUrls.push(e.answer_urls)
-      });
-
-      q.answers.forEach(e => {
-        theAnswers.push(e.answer)
-      });
-
-      questions.push( {
-        answer_urls: answerUrls,
-        answers: theAnswers,
-        choice_type: q.choice_type,
-        max: q.max,
-        min: q.min,
-        question: q.question,
-        result_type: q.result_type,
-        tally_type: q.tally_type
-      });
-    });
-    return questions;
   }
 
   keyBigInt(s: any) {
@@ -103,39 +56,22 @@ export class VerifierComponent implements OnInit {
   getElection() {
     const results: Observable<any> = this.electionService.getElection(this.shortName);
     results.subscribe( res => {
-       this.election = res;
-       this.election.frozen_at = this.dateTimeFormat(res.frozen_at);
-       this.election.voting_ends_at = this.dateTimeFormat(res.voting_ends_at); 
-       this.election.voting_starts_at = this.dateTimeFormat(res.voting_starts_at);
-       const key = JSON.parse(res.public_key);
-       this.election.questions = this.normalizeUnicode(this.election.questions);
-       this.questions = this.getQuestions(this.election.questions);
-       this.pk.g = key.g;
-       this.pk.p = key.p;
-       this.pk.q = key.q;
-       this.pk.y = key.y;
-       this.election.public_key = this.pk;
-       this.election.hash = b64_sha256(this.toUnicode(JSON.stringify(this.election)));
-       this.election.election_hash = this.election.hash;
-       this.election.public_key = this.keyBigInt(this.pk);
+       this.election = new Election(res);
+       this.pk = this.election.publicKey;
+       this.questions = this.election.questions;
+       this.election.generateHash();
+       this.nAnswers = this.election.questions[0].answers;
     });
   }
 
-  result_append(s: string) {
-    this.results[this.results.length] = s;
-  }
-
-
   verify() {
-    this.results = [];
+    this.showTable = true;
+    this.logger.reset();
     this.count = 0;
-
-    this.result_append('eleição carregada: ' + this.election.name);
-    this.result_append('código de identificação da eleição: ' + this.election.election_hash);
 
     this.questions.forEach((q: any, index: number) => {
       if ( !(q.tally_type === 'homomorphic' )) {
-        this.result_append(
+        this.logger.append(
           'PROBLEMA: esta eleição não é uma eleição de apuração \
           homomórfica direta. Portanto,o Helios não pode verificá-la.');
         return;
@@ -146,24 +82,17 @@ export class VerifierComponent implements OnInit {
       });
     });
 
-    this.result_append('carregando lista de eleitores...');
+    // this.logger.append('carregando lista de eleitores...');
     const results: Observable<any> = this.electionService.getBallots(this.shortName);
     results.subscribe((res: any) => {
       const listBallots: any = [];
-      this.result_append('lista de eleitores carregada, agora carregando a cédula de cada um..');
+      // this.logger.append('lista de eleitores carregada, agora carregando a cédula de cada um..');
 
       res.message.forEach((ballot: any) => {
-        const getBallot: Observable<any> = this.electionService.getLastBallot(this.shortName, ballot.voter_uuid);
-        listBallots[listBallots.length] = getBallot;
-      });
-
-      forkJoin(listBallots).subscribe((lastBallots: any) => {
-        this.result_append('Cédulas:');
-        lastBallots.forEach((castVote: any) => {
+        this.electionService.getLastBallot(this.shortName, ballot.voter_uuid).subscribe(castVote => {
           this.doVerify(castVote.message);
         });
       });
-
     });
   }
 
@@ -172,18 +101,18 @@ export class VerifierComponent implements OnInit {
 
     const vote: any = EncryptedVote.fromJSONObject(castVote.vote, this.election);
     const voteTohash: any = EncryptedVote.fromJSONObject(castVote.vote, this.election); /* FIX ME */
-    this.result_append('Eleitor #' + this.count++);
-    this.result_append('-- UUID: ' + castVote.voter_uuid);
-    this.result_append('-- Número de Rastreamento da Cédula: ' + this.getHash(voteTohash));
-    vote.verifyProof(this.election.public_key,
+    const voteHash = this.getHash(voteTohash);
+    this.logger.append(voteHash);
+    vote.verifyProof(this.election.publicKey,
       (answerNum: any, choiceNum: any, result: any, choice: any) => {
         this.overallResult = this.overallResult && result;
         if (choiceNum != null) {
           // keep track of tally
           this.tally[answerNum][choiceNum] = choice.multiply(this.tally[answerNum][choiceNum]);
-          this.result_append('Questão #' + (answerNum + 1) + ', Opção #' + (choiceNum + 1) + ' -- ' + result);
+          this.logger.postResult(voteHash, result, choiceNum);
+          // this.logger.append('Questão #' + (answerNum + 1) + ', Opção #' + (choiceNum + 1) + ' -- ' + result);
       } else {
-          this.result_append('Questão #' + (answerNum + 1) + ' GLOBAL -- ' + result);
+          // this.logger.append('Questão #' + (answerNum + 1) + ' GLOBAL -- ' + result);
       }
     });
   }

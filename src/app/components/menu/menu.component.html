@@ -1,5 +1,17 @@
 <div style="width: 100%; text-align:center">
   <img mat-card-image src="assets/images/branco.png" style="width: 200px">
 </div>
-<mat-expansion-panel [disabled]="isDisabled">
-</mat-expansion-panel>
+<mat-nav-list>
+    <mat-list-item (click)="goto('/')">
+      <mat-icon matListIcon>home</mat-icon>
+      <h2 matLine> Home </h2>
+    </mat-list-item>
+    <mat-list-item (click)="goto('/users')">
+      <mat-icon matListIcon>person</mat-icon>
+      <h2 matLine> Eleitores </h2>
+    </mat-list-item>
+    <mat-list-item (click)="goto('/users')">
+      <mat-icon matListIcon>account_circle</mat-icon>
+      <h2 matLine> Conta </h2>
+    </mat-list-item>
+</mat-nav-list>

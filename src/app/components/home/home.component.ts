@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Election } from 'src/app/models/election.model';
 
 @Component({
   selector: 'app-home',
@@ -16,9 +17,26 @@ import { catchError } from 'rxjs/operators';
 export class HomeComponent implements OnInit {
 
   user: any;
-  elections: any;
+  elections: any = [];
   isReady = false;
   mainElection: any = {name: '', description: '' };
+  electionsEnded: any;
+  electionsReady: any;
+  electionsStarted: any;
+  electionsFiltered: any = [
+    {
+      name: 'Encerrada',
+      election: this.electionsEnded
+    },
+    {
+      name: 'Pronta',
+      election: this.electionsReady
+    },
+    {
+      name: 'Ativa',
+      election: this.electionsStarted
+    }
+  ];
 
   constructor(
     private router: Router,
@@ -35,9 +53,9 @@ export class HomeComponent implements OnInit {
       });
     }
 
-    ngOnInit() {
-      this.user = this.authService.getUser();
-    }
+  ngOnInit() {
+    this.user = this.authService.getUser();
+  }
 
   authHandling(res: any) {
     if (!res.message.hasLogged) {
@@ -47,70 +65,32 @@ export class HomeComponent implements OnInit {
   }
 
   electionHandling(res: any) {
-    this.elections = res;
-    if (res.length > 0) {
-      this.mainElection = res[0];
-    }
+    res.forEach((e: any) => {
+      this.elections.push(new Election(e));
+    });
+    this.updateFilter();
     this.isReady = true;
   }
 
+  updateFilter() {
+    this.electionsFiltered[0].election = this.elections.filter((e: any) => e.isEnded());
+    this.electionsFiltered[1].election = this.elections.filter((e: any) => e.isReady());
+    this.electionsFiltered[2].election = this.elections.filter((e: any) => e.isStarted());
+  }
+
+  needAdmin(f: any) {
+    if (f.name === 'Pronta') {
+      return this.hasAdmin();
+    }
+    return true;
+  }
+
   hasAdmin() {
-    return this.user.admin_p;
+    return this.user.isAdmin();
   }
 
   hasElection() {
     return this.elections.length > 0;
-  }
-
-  arrayOne(n: number): any[] {
-    return Array(n);
-  }
-
-  getElections() {
-    const results: Observable<any> = this.electionService.getElections();
-    results.subscribe( res => {
-       this.elections = res;
-       if (res.length > 0) {
-         this.mainElection = res[0];
-       }
-       console.log(this.mainElection);
-    });
-  }
-
-  freeze() {
-    const results: Observable<any> = this.electionService.freezeElection(this.mainElection.uuid, 'freeze');
-    results.subscribe( res => {
-       console.log(res);
-       location.reload();
-    });
-  }
-
-  isNotFreeze() {
-    return this.mainElection.frozen_at === null;
-  }
-
-  changeMainElection(e: any) {
-    this.mainElection = e;
-  }
-
-  elecitonIsEnd(date: string) {
-    const endTime: Date = new Date(Date.parse(date));
-    if (endTime.getTime() < Date.now()) {
-      return 'Encerrada.';
-    } else {
-      return 'Encerramento: '  + endTime.toLocaleString('pt-br').split('.')[0];
-    }
-  }
-
-  canCompute() {
-    return !this.isNotFreeze() && this.hasAdmin();
-  }
-
-  compute_tally() {
-    const results: Observable<any> = this.electionService.computeTally(this.mainElection.uuid);
-    results.subscribe( res => {
-        location.reload();
-    });
   }
 
 }

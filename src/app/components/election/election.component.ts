@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl, ControlContainer} from '@angular/forms';
 import { ElectionService } from 'src/app/services/election.service';
+import { SuccessdialogService } from 'src/app/services/successdialog.service'
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -8,11 +9,11 @@ import { of } from 'rxjs';
 import { MatStepper } from '@angular/material';
 
 @Component({
-  selector: 'app-eletction',
-  templateUrl: './eletction.component.html',
-  styleUrls: ['./eletction.component.scss']
+  selector: 'app-election',
+  templateUrl: './election.component.html',
+  styleUrls: ['./election.component.scss']
 })
-export class EletctionComponent implements OnInit {
+export class ElectionComponent implements OnInit {
   isLinear = false;
   electionFormGroup: FormGroup;
   questionFormGroup: FormGroup;
@@ -27,7 +28,8 @@ export class EletctionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private electionService: ElectionService,
     private router: Router,
-    private cd: ChangeDetectorRef) { }
+    private cd: ChangeDetectorRef,
+    private sucessDialog: SuccessdialogService) { }
 
   ngOnInit() {
     this.uploadFileForm = new FormGroup({
@@ -35,7 +37,7 @@ export class EletctionComponent implements OnInit {
     });
     this.trusteeOption = 1;
     this.electionFormGroup = this.formBuilder.group({
-      short_name: ['', Validators.compose([ Validators.required, Validators.pattern('^[a-zA-Z0-9_]*$')])],
+      short_name: ['', Validators.compose([ Validators.required, Validators.pattern('^[a-zA-Z0-9_]*$'), Validators.maxLength(15)])],
       name: ['', Validators.required],
       description: ['', Validators.required],
       help_email: ['', Validators.compose([ Validators.required, Validators.email]) ],
@@ -68,6 +70,10 @@ export class EletctionComponent implements OnInit {
       voter: ['open', Validators.required],
       theFile: [null, Validators.required]
     });
+  }
+
+  success(message) {
+    this.sucessDialog.open(message);
   }
 
   goForward(stepper: MatStepper, isDisable?: boolean) {
@@ -157,12 +163,26 @@ export class EletctionComponent implements OnInit {
   }
 
   submit() {
-    const resultsElection: Observable<any> = this.electionService.createElection(this.electionFormGroup.value);
+    const questions = Object.assign({}, this.questionFormGroup.value);
+    const data = Object.assign({}, this.electionFormGroup.value);
+    const answers: any = [];
+    const answersUrl: any = [];
+    questions.answers.forEach((e: any) => {
+      answers.push(e.answer);
+    });
+    questions.answer_urls.forEach((e: any) => {
+      answersUrl.push(e.answer_urls);
+    });
+    questions.answers = answers;
+    questions.answer_urls = answersUrl;
+    data.questions = [questions];
+    const resultsElection: Observable<any> = this.electionService.createElection(data);
     resultsElection.subscribe( res => {
       const trusteeRequest: Observable<any> = this.trusteeRequest(res.message.uuid, this.trusteeFormGroup.get('trustee').value);
       const voterRequest: Observable<any> = this.voterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       const createVoters: Observable<any> = this.createVoterRequest(res.message.uuid, this.voterFormGroup.get('voter').value);
       forkJoin(trusteeRequest, voterRequest, createVoters).subscribe(results => {
+        this.success('Eleição Cadastrada com Sucesso!');
         this.router.navigate(['']);
       });
     });

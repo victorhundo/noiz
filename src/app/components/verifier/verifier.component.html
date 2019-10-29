@@ -1,2 +1,41 @@
-<button mat-button color="primary" (click)="verify()">asdasd</button>
-<p *ngFor="let l of results" style="padding: 10px;margin:0px;">{{l}}</p>
+<div class="login-box">
+    <mat-card style="text-align:center;">
+        <mat-card-title >Apurar Votação: {{election.name}}</mat-card-title>
+        <mat-card-subtitle>Código de identificação: {{election.hash}}</mat-card-subtitle>
+        <div style="position: absolute; right: 20px; top: 20px">
+                <button mat-raised-button color="primary" (click)="verify()" style="height: 50px">Apurar</button>
+        </div>
+    </mat-card>
+    <table mat-table [dataSource]="logger.get()" class="mat-elevation-z8 verifierTable" *ngIf="showTable">    
+            <div *ngFor="let c of logger.setColumns(nAnswers); let i=index">
+                <div *ngIf="c === 'Cédula'">
+                    <ng-container matColumnDef={{c}}>
+                        <th mat-header-cell *matHeaderCellDef> {{c}} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.hash}} </td>
+                        <td mat-footer-cell *matFooterCellDef> 
+                            <strong>Total de Cédulas Apuradas: {{logger.len()}}</strong>
+                        </td>
+                    </ng-container>
+                </div>
+                <div *ngIf="c != 'Cédula'">
+                    <ng-container matColumnDef={{c}}>
+                        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> {{c}} </th>
+                        <td mat-cell *matCellDef="let element"
+                            style="text-align: center;"
+                            [ngClass]="{'check': element.answers[i - 1], 'uncheck': !element.answers[i - 1]}"> 
+                            <mat-icon *ngIf="element.answers[i - 1]">check</mat-icon>
+                            <mat-icon *ngIf="!element.answers[i - 1]">close</mat-icon>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                </div>
+            </div>
+        
+            <tr mat-header-row *matHeaderRowDef="logger.setColumns(nAnswers)"></tr>
+            <tr mat-row *matRowDef="let row; columns: logger.setColumns(nAnswers);"></tr>
+            <tr mat-footer-row *matFooterRowDef="logger.setColumns(nAnswers)"></tr>
+        </table>
+        <div style="text-align: right; margin-top:20px">
+                <button mat-raised-button color="primary" [routerLink]="['/elections', shortName, 'detail']">Detalhes {{election.name}}</button>              
+        </div>
+</div>

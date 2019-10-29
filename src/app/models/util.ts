@@ -22,4 +22,15 @@ export class Util {
     static bigIntFromJSONObject(s:any){
         return BigInt(s,10);
     }
+
+    static toUnicode(s: string) {
+      return s.replace(/[\u007F-\uFFFF]/g, (chr) => {
+        return '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).substr(-4);
+      });
+    }
+
+    static getDate(dateString: string) {
+      const date: Date = new Date(Date.parse(dateString));
+      return date.toLocaleString('pt-br').split('.')[0];
+    }
 }

@@ -5,71 +5,39 @@
   <div style="width: 100%; text-align:center">
     <img mat-card-image src="assets/images/branco.png" style="width: 200px">
   </div>
-  <mat-card class="login-box" >
-    
-    <mat-card-content *ngIf="!hasElection()">
-      <h1 class="noneElection">NENHUMA ELEIÇÃO AINDA</h1>
-    </mat-card-content>
-    
-    <mat-card-content *ngIf="hasElection()">
-      <mat-card class="mainElection">
-        <mat-toolbar>
-          <mat-card-title>{{mainElection.name}}</mat-card-title>
-          <p><mat-card-subtitle class="subtitle">{{ elecitonIsEnd(mainElection.voting_ends_at)}} </mat-card-subtitle></p>
-          <span class="example-spacer"></span>        
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon aria-hidden="false">more_vert</mat-icon>
-          </button>
-        </mat-toolbar>
-        <mat-card-content >
-          <p class="description">{{mainElection.description}}</p>
-        </mat-card-content>
-        <mat-card-actions style="padding: 20px;" align="end" class="electionActions">
-          <button mat-raised-button color="primary" [routerLink]="['/booth', mainElection.short_name]"  [disabled]="isNotFreeze()">VOTAR</button>
-        </mat-card-actions>
-      </mat-card>
 
-      <div class="electionsBox waves-effect waves-light" *ngIf="elections.length > 1">
-        <div *ngFor="let e of elections">
-          <mat-card class="election" *ngIf="!(e.uuid == mainElection.uuid)" (click)="changeMainElection(e)" >
-            <a href="#" class="electionBtn" matRipple>
-              <mat-card-title>{{e.name}}</mat-card-title>
-            </a>
-          </mat-card>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  
+  <div class="main-div">
+    <div *ngFor="let filtered of electionsFiltered">
+      <mat-card class="electionList" *ngIf="needAdmin(filtered)">
+          <mat-toolbar color="primary" *ngIf="filtered.name != 'Encerrada'">
+              <span>{{filtered.name}}</span>
+              <span class="example-spacer"></span>
+          </mat-toolbar>
+          <mat-toolbar *ngIf="filtered.name == 'Encerrada'">
+              <span>{{filtered.name}}</span>
+              <span class="example-spacer"></span>
+          </mat-toolbar>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let e of filtered.election" [routerLink]="['/elections', e.shortName, 'detail']">
+              <mat-icon matListIcon>how_to_vote</mat-icon>
+              <h2 matLine> {{e.name}} </h2>
+              <p matLine>
+                  <span class="demo-2"> {{ e.short_name }} </span>
+              </p>
+            </mat-list-item>
+        </mat-nav-list>
+      </mat-card>
+    </div>
+  </div>   
+
   
   <button mat-fab color="primary" class="md-fab-bottom-right" *ngIf="hasAdmin()" [matMenuTriggerFor]="menuCreate">
     <mat-icon>add</mat-icon>
   </button>
 
-  <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="freeze()" *ngIf="hasAdmin() && isNotFreeze()">
-        <mat-icon>ac_unit</mat-icon>
-        <span>Congelar</span>
-      </button>
-      <button mat-menu-item *ngIf="canCompute()" (click)="compute_tally()">
-        <mat-icon aria-hidden="false">done_all</mat-icon>
-        <span>Computar Votos</span>
-      </button>
-      <button mat-menu-item *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">archive</mat-icon>
-        <span>Arquivar</span>
-      </button>
-      <button mat-menu-item *ngIf="hasAdmin()">
-        <mat-icon aria-hidden="false">edit</mat-icon>
-        <span>Editar</span>
-      </button> 
-      <button mat-menu-item>
-          <mat-icon aria-hidden="false">info</mat-icon>
-          <span>Sobre</span>
-      </button>
-  </mat-menu>
-
   <mat-menu #menuCreate="matMenu">
-    <button mat-menu-item [routerLink]="['/elections/new']">
+    <button mat-menu-item [routerLink]="['/elections']">
       <mat-icon>how_to_vote</mat-icon>
       <span>Eleição</span>
     </button>

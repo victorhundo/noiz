@@ -1,0 +1,20 @@
+.verifierTable {
+    width: 100%;
+}
+
+.check {
+    background: green;
+}
+
+.uncheck {
+    background: red;
+}
+
+.login-box {
+    width: 90%;
+    position:absolute; /*it can be fixed too*/
+    left:0; right:0;
+    margin:auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }

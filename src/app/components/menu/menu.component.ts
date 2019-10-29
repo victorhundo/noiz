@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SidenavService } from 'src/app/services/sidenav.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private sidenav: SidenavService,
+    private router: Router) { }
 
   ngOnInit() {
   }
 
+  goto(route: string) {
+    this.sidenav.toggle();
+    this.router.navigate([route]);
+  }
 }
