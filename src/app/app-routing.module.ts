@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: 'booth/:short_name', component: BoothComponent },
   { path: 'users', component: UserComponent },
   { path: 'users/new', component: NewUserComponent },
+  { path: '**', redirectTo: '/'},
 ];
 
 @NgModule({

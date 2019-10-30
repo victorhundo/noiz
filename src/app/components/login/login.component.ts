@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {FormBuilder, FormGroup, Validators, FormArray} from '@angular/forms';
 
 @Component({
@@ -10,7 +10,12 @@ import {FormBuilder, FormGroup, Validators, FormArray} from '@angular/forms';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  constructor(private router: Router, private authService: AuthService, private _formBuilder: FormBuilder) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private _formBuilder: FormBuilder
+    ) { }
 
   usuario: string;
   senha: string;
@@ -28,7 +33,9 @@ export class LoginComponent implements OnInit {
       results.subscribe( res => {
         localStorage.setItem('noiz', JSON.stringify(res));
         localStorage.setItem('token', JSON.stringify(res.token));
-        this.router.navigate(['']);
+        let backUrl = this.route.snapshot.queryParamMap.get('back_url');
+        if (!backUrl) { backUrl = ''; }
+        this.router.navigate([backUrl]);
       });
     }
 }

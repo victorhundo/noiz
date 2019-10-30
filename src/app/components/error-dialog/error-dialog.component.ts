@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-error-dialog',
@@ -8,8 +9,8 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 })
 export class ErrorDialogComponent implements OnInit {
 
-  title = 'Angular-Interceptor';
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  title = 'Ops.. Algo Deu Errado :(';
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router) {}
 
   ngOnInit() {
     if (this.data.reason === 'Bad Username or Password' ) {
@@ -20,6 +21,11 @@ export class ErrorDialogComponent implements OnInit {
       this.data.reason = 'Usuário Administrador Não Está Autorizado para Votar';
     } else if (this.data.reason === 'Voter matching query does not exist.') {
       this.data.reason = 'Você Não Está Autorizado para Votar nessa Eleição';
+    } else if (this.data.reason === 'User not logged in to the system.') {
+      localStorage.clear();
+      this.title = 'Você Está Desconectado';
+      this.data.reason = 'Para Continuar Efetue o Login.';
+      this.router.navigate(['login'], {queryParams: {back_url: this.data.back_url}});
     }
   }
 

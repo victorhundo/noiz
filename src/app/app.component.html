@@ -4,7 +4,7 @@
     <app-menu></app-menu>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-toolbar></app-toolbar>
+    <app-toolbar *ngIf="!isLoginPath()"></app-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -41,13 +41,10 @@ export class HttpConfigInterceptor implements HttpInterceptor {
             catchError((error: HttpErrorResponse) => {
                 const data: any = {
                     reason: error.error.message,
-                    status: error.status
+                    status: error.status,
+                    back_url: this.router.url
                 };
-                if (data.reason === 'User not logged in to the system.') {
-                    this.router.navigate(['login']);
-                } else {
-                    this.errorDialogService.openDialog(data);
-                }
+                this.errorDialogService.openDialog(data);
                 return throwError(error);
             }));
     }
