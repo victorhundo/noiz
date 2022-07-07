@@ -28,7 +28,7 @@
     "elgamal": "^0.3.0",
     "hammerjs": "^2.0.8",
     "json-stable-stringify": "^1.0.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "rxjs": "~6.4.0",
     "sha256": "^0.2.0",
     "sjcl": "^1.0.8",
